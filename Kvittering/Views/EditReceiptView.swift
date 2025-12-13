@@ -25,7 +25,7 @@ struct EditReceiptView: View {
             }
 
             Section("Beløp og kategori") {
-                TextField("Beløp", value: $viewModel.totalAmount, format: .number)
+                TextField("Beløp", value: $viewModel.totalAmount, format: .number.precision(.fractionLength(2)).grouping(.automatic))
                     .keyboardType(.decimalPad)
                 Picker("Kategori", selection: $viewModel.category) {
                     ForEach(Category.allCases) { category in

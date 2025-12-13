@@ -58,24 +58,50 @@ struct OCRService {
             throw OCRError.noTextFound
         }
         
+        #if DEBUG
         print("OCR Raw text:\n\(text)")
+        #endif
         return text
     }
 
     func parse(from text: String) -> OCRResult {
         let lines = text.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-        print("OCR Lines: \(lines)")
         let store = detectStoreName(in: lines)
         let date = detectDate(in: lines)
         let total = detectTotal(in: lines)
         let items: [LineItem] = []
+        
+        #if DEBUG
         print("OCR Result - Store: \(store ?? "nil"), Date: \(String(describing: date)), Total: \(String(describing: total))")
+        #endif
+        
         return OCRResult(storeName: store, purchaseDate: date, totalAmount: total, lineItems: items, rawText: text)
     }
 
     private func detectStoreName(in lines: [String]) -> String? {
-        // Kjente butikknavn å se etter
-        let knownStores = ["sport 1", "rema", "kiwi", "coop", "extra", "meny", "bunnpris", "spar", "joker", "europris", "jula", "byggmax", "obs", "elkjøp", "power", "xxl"]
+        // Kjente norske butikknavn å se etter
+        let knownStores = [
+            // Dagligvare
+            "rema", "kiwi", "coop", "extra", "meny", "bunnpris", "spar", "joker", "prix",
+            "marked", "obs", "mega", "oda",
+            // Sport og fritid
+            "sport 1", "xxl", "intersport", "g-sport", "anton sport",
+            // Elektronikk
+            "elkjøp", "power", "komplett", "netonnet",
+            // Bygg og hjem
+            "byggmax", "jula", "europris", "clas ohlson", "jernia", "maxbo", "montér",
+            "megaflis", "flisekompaniet", "ikea", "skeidar", "bohus", "jysk",
+            // Klær og mote
+            "h&m", "cubus", "dressmann", "bikbok", "carlings", "volt",
+            // Apotek og helse
+            "apotek 1", "boots", "vitus", "vitusapotek",
+            // Vinmonopol
+            "vinmonopolet",
+            // Bensin
+            "circle k", "esso", "shell", "uno-x", "best",
+            // Annet
+            "nille", "søstrene grene", "normal", "flying tiger"
+        ]
         
         // Først: Sjekk om noen kjente butikknavn finnes
         for line in lines {
@@ -152,7 +178,6 @@ struct OCRService {
                     // Valider at datoen er rimelig (mellom 2020 og 2030)
                     let year = Calendar.current.component(.year, from: date)
                     if year >= 2020 && year <= 2030 {
-                        print("  -> Found date (yyyy-MM-dd): \(dateString)")
                         return date
                     }
                 }
@@ -166,7 +191,6 @@ struct OCRService {
                 if let date = formatter.date(from: normalized) {
                     let year = Calendar.current.component(.year, from: date)
                     if year >= 2020 && year <= 2030 {
-                        print("  -> Found date (dd.MM.yyyy): \(normalized)")
                         return date
                     }
                 }
@@ -184,7 +208,6 @@ struct OCRService {
                 if let date = formatter.date(from: dateString) {
                     let year = Calendar.current.component(.year, from: date)
                     if year >= 2020 && year <= 2030 {
-                        print("  -> Found date (fallback): \(dateString)")
                         return date
                     }
                 }
@@ -260,7 +283,6 @@ struct OCRService {
                         }
                         
                         candidates.append((value, priority, line))
-                        print("  -> Found amount: \(raw) -> \(value) (priority: \(priority))")
                     }
                 }
             }
@@ -268,8 +290,6 @@ struct OCRService {
             // Sett flagg for neste iterasjon
             afterTotalKeyword = hasKeyword
         }
-        
-        print("OCR Amount candidates count: \(candidates.count)")
         
         // Sorter etter prioritet først, deretter beløp
         return candidates.sorted { 

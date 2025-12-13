@@ -39,44 +39,7 @@ final class EditReceiptViewModel: ObservableObject {
     }
 
     func attachContext(_ context: ModelContext) {
-        // #region agent log
-        let logData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "run1",
-            "hypothesisId": "C",
-            "location": "EditReceiptViewModel.swift:41",
-            "message": "attachContext kalt",
-            "data": ["hasContext": true],
-            "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let logJson = try? JSONSerialization.data(withJSONObject: logData),
-           let logString = String(data: logJson, encoding: .utf8) {
-            if let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            } else {
-                try? logString.write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
-        
         self.repository = ReceiptRepository(context: context)
-        
-        // #region agent log
-        let logData2: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "run1",
-            "hypothesisId": "C",
-            "location": "EditReceiptViewModel.swift:60",
-            "message": "Repository opprettet",
-            "data": ["hasRepository": repository != nil],
-            "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let logJson = try? JSONSerialization.data(withJSONObject: logData2),
-           let logString = String(data: logJson, encoding: .utf8),
-           let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-            try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-        }
-        // #endregion
     }
 
     func applyOCR(result: OCRResult) {
@@ -89,53 +52,10 @@ final class EditReceiptViewModel: ObservableObject {
     }
 
     func save() throws {
-        // #region agent log
-        let logData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "run1",
-            "hypothesisId": "D",
-            "location": "EditReceiptViewModel.swift:54",
-            "message": "save() startet",
-            "data": [
-                "hasRepository": repository != nil,
-                "storeName": storeName,
-                "totalAmount": "\(totalAmount)",
-                "isEditing": editingReceipt != nil
-            ],
-            "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let logJson = try? JSONSerialization.data(withJSONObject: logData),
-           let logString = String(data: logJson, encoding: .utf8) {
-            if let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            } else {
-                try? logString.write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
-        
         guard let repository else {
-            // #region agent log
-            let logData2: [String: Any] = [
-                "sessionId": "debug-session",
-                "runId": "run1",
-                "hypothesisId": "D",
-                "location": "EditReceiptViewModel.swift:85",
-                "message": "Repository er nil",
-                "data": [:],
-                "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-            ]
-            if let logJson = try? JSONSerialization.data(withJSONObject: logData2),
-               let logString = String(data: logJson, encoding: .utf8),
-               let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            }
-            // #endregion
-            
             throw NSError(domain: "EditReceiptViewModel", code: 1, userInfo: [NSLocalizedDescriptionKey: "ModelContext er ikke tilkoblet"])
         }
         
-        // Validering
         guard !storeName.trimmingCharacters(in: .whitespaces).isEmpty else {
             throw NSError(domain: "EditReceiptViewModel", code: 2, userInfo: [NSLocalizedDescriptionKey: "Butikknavn er påkrevd"])
         }

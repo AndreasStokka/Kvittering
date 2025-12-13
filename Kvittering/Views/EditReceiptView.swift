@@ -65,51 +65,9 @@ struct EditReceiptView: View {
             }
         }
         .onAppear {
-            // #region agent log
-            let logData: [String: Any] = [
-                "sessionId": "debug-session",
-                "runId": "run1",
-                "hypothesisId": "C",
-                "location": "EditReceiptView.swift:67",
-                "message": "EditReceiptView onAppear",
-                "data": [
-                    "hasModelContext": true,
-                    "hasSourceImage": sourceImage != nil,
-                    "hasOcrResult": ocrResult != nil
-                ],
-                "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-            ]
-            if let logJson = try? JSONSerialization.data(withJSONObject: logData),
-               let logString = String(data: logJson, encoding: .utf8) {
-                if let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                    try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-                } else {
-                    try? logString.write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-                }
-            }
-            // #endregion
-            
             viewModel.image = sourceImage
             viewModel.attachContext(modelContext)
             
-            // #region agent log
-            let logData2: [String: Any] = [
-                "sessionId": "debug-session",
-                "runId": "run1",
-                "hypothesisId": "C",
-                "location": "EditReceiptView.swift:85",
-                "message": "Etter attachContext",
-                "data": ["attachContextCalled": true],
-                "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-            ]
-            if let logJson = try? JSONSerialization.data(withJSONObject: logData2),
-               let logString = String(data: logJson, encoding: .utf8),
-               let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            }
-            // #endregion
-            
-            // Bruk OCR-resultat hvis tilgjengelig
             if let ocrResult = ocrResult {
                 viewModel.applyOCR(result: ocrResult)
             }
@@ -126,30 +84,6 @@ struct EditReceiptView: View {
     }
     
     private func save() {
-        // #region agent log
-        let logData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "run1",
-            "hypothesisId": "D",
-            "location": "EditReceiptView.swift:86",
-            "message": "save() kalt",
-            "data": [
-                "isValid": isValid,
-                "storeName": viewModel.storeName,
-                "totalAmount": "\(viewModel.totalAmount)"
-            ],
-            "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let logJson = try? JSONSerialization.data(withJSONObject: logData),
-           let logString = String(data: logJson, encoding: .utf8) {
-            if let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            } else {
-                try? logString.write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
-        
         guard isValid else {
             errorMessage = "Vennligst fyll ut butikknavn og beløp"
             return
@@ -159,45 +93,10 @@ struct EditReceiptView: View {
         Task {
             do {
                 try viewModel.save()
-                
-                // #region agent log
-                let logData2: [String: Any] = [
-                    "sessionId": "debug-session",
-                    "runId": "run1",
-                    "hypothesisId": "D",
-                    "location": "EditReceiptView.swift:115",
-                    "message": "Lagring vellykket",
-                    "data": [:],
-                    "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-                ]
-                if let logJson = try? JSONSerialization.data(withJSONObject: logData2),
-                   let logString = String(data: logJson, encoding: .utf8),
-                   let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                    try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-                }
-                // #endregion
-                
                 await MainActor.run {
                     dismiss()
                 }
             } catch {
-                // #region agent log
-                let logData3: [String: Any] = [
-                    "sessionId": "debug-session",
-                    "runId": "run1",
-                    "hypothesisId": "D",
-                    "location": "EditReceiptView.swift:130",
-                    "message": "Lagring feilet",
-                    "data": ["error": error.localizedDescription],
-                    "timestamp": Int(Date().timeIntervalSince1970 * 1000)
-                ]
-                if let logJson = try? JSONSerialization.data(withJSONObject: logData3),
-                   let logString = String(data: logJson, encoding: .utf8),
-                   let existingLog = try? String(contentsOfFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", encoding: .utf8) {
-                    try? (existingLog + "\n" + logString).write(toFile: "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log", atomically: true, encoding: .utf8)
-                }
-                // #endregion
-                
                 await MainActor.run {
                     if let nsError = error as NSError? {
                         errorMessage = nsError.localizedDescription

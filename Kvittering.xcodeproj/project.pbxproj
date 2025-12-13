@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		A1APP1 /* KvitteringApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1APP0 /* KvitteringApp.swift */; };
 		A1MODEL1 /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1MODEL0 /* Receipt.swift */; };
-		A1PLIST1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1PLIST0 /* Info.plist */; };
 		A1SERV1 /* FeatureAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV0 /* FeatureAccess.swift */; };
 		A1SERV10 /* ReceiptRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV11 /* ReceiptRepository.swift */; };
 		A1SERV2 /* CategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV3 /* CategoryService.swift */; };
@@ -62,8 +61,8 @@
 		A1VM5 /* EditReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptViewModel.swift; sourceTree = "<group>"; };
 		A1VM7 /* ReceiptDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailViewModel.swift; sourceTree = "<group>"; };
 		A1VM9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Kvittering.app; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = KvitteringTests.xctest; path = .xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KvitteringTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +116,7 @@
 		PRODS /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				PRODID /* .app */,
+				PRODID /* Kvittering.app */,
 				TESTPROD /* KvitteringTests.xctest */,
 			);
 			name = Products;
@@ -199,7 +198,7 @@
 			);
 			name = Kvittering;
 			productName = Kvittering;
-			productReference = PRODID /* .app */;
+			productReference = PRODID /* Kvittering.app */;
 			productType = "com.apple.product-type.application";
 		};
 		TESTTARGET /* KvitteringTests */ = {
@@ -312,6 +311,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				DEVELOPMENT_TEAM = HCUBQ28769;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Kvittering/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -319,7 +319,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Andreas.Kvittering;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -335,6 +335,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				DEVELOPMENT_TEAM = HCUBQ28769;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Kvittering/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -342,7 +343,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Andreas.Kvittering;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

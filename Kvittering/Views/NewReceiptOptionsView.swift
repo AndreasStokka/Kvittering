@@ -15,6 +15,8 @@ struct NewReceiptOptionsView: View {
     @State private var ocrError: String?
     @State private var scannerError: String?
     
+    var onReceiptSaved: (() -> Void)?
+    
     private let ocrService = OCRService()
 
     var body: some View {
@@ -32,13 +34,18 @@ struct NewReceiptOptionsView: View {
             }
             .navigationTitle("Ny kvittering")
             .sheet(isPresented: $presentEditor) {
-                EditReceiptView(sourceImage: selectedImage, ocrResult: ocrResult)
+                NavigationStack {
+                    EditReceiptView(sourceImage: selectedImage, ocrResult: ocrResult, onSaved: {
+                        dismiss()
+                        onReceiptSaved?()
+                    })
                     .modelContext(modelContext)
+                }
             }
             .sheet(isPresented: $showPhotoPicker) {
                 PhotoPicker(image: $selectedImage)
                     .onDisappear {
-                        if selectedImage != nil {
+                        if selectedImage != nil && !isProcessingOCR {
                             processOCR()
                         }
                     }
@@ -48,7 +55,7 @@ struct NewReceiptOptionsView: View {
                     scannerError = "Dokument-scanner feilet: \(error.localizedDescription). Prøv vanlig kamera i stedet."
                 }
                 .onDisappear {
-                    if selectedImage != nil {
+                    if selectedImage != nil && !isProcessingOCR {
                         processOCR()
                     }
                 }
@@ -58,7 +65,7 @@ struct NewReceiptOptionsView: View {
                     scannerError = "Kamera feilet: \(error.localizedDescription). I simulator, vennligst bruk 'Velg fra Bilder' i stedet."
                 }
                 .onDisappear {
-                    if selectedImage != nil {
+                    if selectedImage != nil && !isProcessingOCR {
                         processOCR()
                     }
                 }

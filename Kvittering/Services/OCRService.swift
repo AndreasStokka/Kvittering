@@ -256,7 +256,8 @@ struct OCRService {
                         .replacingOccurrences(of: ",", with: ".")
                     
                     if let value = Decimal(string: normalized) {
-                        // Filtrer ut urealistiske beløp
+                        // Filtrer ut NaN, uendelig og urealistiske beløp
+                        guard !value.isNaN && !value.isInfinite else { continue }
                         guard value >= 10 && value < 100000 else { continue }
                         
                         // Prioritering:

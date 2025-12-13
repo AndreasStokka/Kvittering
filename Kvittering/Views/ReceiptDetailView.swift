@@ -26,7 +26,7 @@ struct ReceiptDetailView: View {
                 Text(viewModel.receipt.storeName)
                     .font(.title2.bold())
                 Text(viewModel.receipt.purchaseDate, style: .date)
-                Text("kr \(viewModel.receipt.totalAmount as NSDecimalNumber)")
+                Text(formatAmount(viewModel.receipt.totalAmount))
                 Text(viewModel.receipt.category)
                 Text(viewModel.warrantyStatusText)
                     .font(.subheadline)
@@ -40,7 +40,7 @@ struct ReceiptDetailView: View {
                             Text(item.descriptionText)
                             Spacer()
                             Text("\(item.quantity as NSDecimalNumber)x")
-                            Text("kr \(item.lineTotal as NSDecimalNumber)")
+                            Text(formatAmount(item.lineTotal))
                         }
                     }
                 }
@@ -69,7 +69,10 @@ struct ReceiptDetailView: View {
             ActivityView(activityItems: viewModel.shareItems)
         }
         .sheet(isPresented: $showEdit) {
-            EditReceiptView(receipt: viewModel.receipt)
+            NavigationStack {
+                EditReceiptView(receipt: viewModel.receipt)
+                    .modelContext(modelContext)
+            }
         }
         .alert("Slett kvittering?", isPresented: $showDeleteAlert) {
             Button("Slett", role: .destructive) {
@@ -82,5 +85,13 @@ struct ReceiptDetailView: View {
             viewModel.attach(context: modelContext)
             viewModel.prepareShare()
         }
+    }
+    
+    private func formatAmount(_ amount: Decimal) -> String {
+        // Sjekk for NaN og ugyldige verdier
+        if amount.isNaN || amount.isInfinite {
+            return "kr 0,00"
+        }
+        return "kr \(amount as NSDecimalNumber)"
     }
 }

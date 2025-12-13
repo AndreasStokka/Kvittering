@@ -45,7 +45,13 @@ final class EditReceiptViewModel: ObservableObject {
     func applyOCR(result: OCRResult) {
         if let store = result.storeName { storeName = store }
         if let date = result.purchaseDate { purchaseDate = date }
-        if let total = result.totalAmount { totalAmount = total }
+        if let total = result.totalAmount {
+            // Valider at beløpet ikke er NaN eller ugyldig
+            guard !total.isNaN && !total.isInfinite && total > 0 else {
+                return // Ikke sett ugyldig beløp
+            }
+            totalAmount = total
+        }
         if !result.lineItems.isEmpty { lineItems = result.lineItems }
         category = categoryService.suggestedCategory(for: storeName)
         warrantyYears = warrantyService.defaultWarrantyYears(for: category)
@@ -58,6 +64,11 @@ final class EditReceiptViewModel: ObservableObject {
         
         guard !storeName.trimmingCharacters(in: .whitespaces).isEmpty else {
             throw NSError(domain: "EditReceiptViewModel", code: 2, userInfo: [NSLocalizedDescriptionKey: "Butikknavn er påkrevd"])
+        }
+        
+        // Valider at beløpet ikke er NaN eller ugyldig
+        guard !totalAmount.isNaN && !totalAmount.isInfinite else {
+            throw NSError(domain: "EditReceiptViewModel", code: 3, userInfo: [NSLocalizedDescriptionKey: "Beløpet er ugyldig"])
         }
         
         guard totalAmount > 0 else {

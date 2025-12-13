@@ -7,11 +7,14 @@ struct EditReceiptView: View {
     @StateObject private var viewModel: EditReceiptViewModel
     @State private var isSaving = false
     @State private var errorMessage: String?
+    
+    var onSaved: (() -> Void)?
 
-    init(receipt: Receipt? = nil, sourceImage: UIImage? = nil, ocrResult: OCRResult? = nil) {
+    init(receipt: Receipt? = nil, sourceImage: UIImage? = nil, ocrResult: OCRResult? = nil, onSaved: (() -> Void)? = nil) {
         _viewModel = StateObject(wrappedValue: EditReceiptViewModel(receipt: receipt))
         _sourceImage = State(initialValue: sourceImage)
         _ocrResult = State(initialValue: ocrResult)
+        self.onSaved = onSaved
     }
 
     @State private var sourceImage: UIImage?
@@ -25,7 +28,7 @@ struct EditReceiptView: View {
             }
 
             Section("Beløp og kategori") {
-                TextField("Beløp", value: $viewModel.totalAmount, format: .number.precision(.fractionLength(2)).grouping(.automatic))
+                TextField("Beløp", value: $viewModel.totalAmount, formatter: Self.norwegianNumberFormatter)
                     .keyboardType(.decimalPad)
                 Picker("Kategori", selection: $viewModel.category) {
                     ForEach(Category.allCases) { category in
@@ -80,8 +83,25 @@ struct EditReceiptView: View {
     }
 
     private var isValid: Bool {
-        !viewModel.storeName.trimmingCharacters(in: .whitespaces).isEmpty && viewModel.totalAmount > 0
+        let amount = viewModel.totalAmount
+        // Sjekk for NaN og ugyldige verdier
+        guard !amount.isNaN && !amount.isInfinite && amount > 0 else {
+            return false
+        }
+        return !viewModel.storeName.trimmingCharacters(in: .whitespaces).isEmpty
     }
+    
+    /// Norsk tallformatter for beløp med tusenskilletegn
+    private static let norwegianNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "nb_NO")
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.groupingSeparator = " "
+        formatter.decimalSeparator = ","
+        return formatter
+    }()
     
     private func save() {
         guard isValid else {
@@ -95,6 +115,7 @@ struct EditReceiptView: View {
                 try viewModel.save()
                 await MainActor.run {
                     dismiss()
+                    onSaved?()
                 }
             } catch {
                 await MainActor.run {

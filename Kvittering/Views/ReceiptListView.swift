@@ -30,7 +30,7 @@ struct ReceiptListView: View {
                                     .font(.headline)
                                 Text(receipt.purchaseDate, style: .date)
                                     .font(.subheadline)
-                                Text("kr \(receipt.totalAmount as NSDecimalNumber)")
+                                Text(formatAmount(receipt.totalAmount))
                                     .font(.subheadline)
                             }
                         }
@@ -45,5 +45,13 @@ struct ReceiptListView: View {
                 viewModel.attach(context: modelContext)
             }
         }
+    }
+    
+    private func formatAmount(_ amount: Decimal) -> String {
+        // Sjekk for NaN og ugyldige verdier
+        if amount.isNaN || amount.isInfinite {
+            return "kr 0,00"
+        }
+        return "kr \(amount as NSDecimalNumber)"
     }
 }

@@ -10,7 +10,7 @@ struct ReceiptDetailView: View {
     @State private var showDeleteAlert = false
 
     init(receipt: Receipt) {
-        _viewModel = StateObject(wrappedValue: ReceiptDetailViewModel(receipt: receipt, context: ModelContext.preview))
+        _viewModel = StateObject(wrappedValue: ReceiptDetailViewModel(receipt: receipt))
     }
 
     var body: some View {
@@ -26,7 +26,7 @@ struct ReceiptDetailView: View {
                 Text(viewModel.receipt.storeName)
                     .font(.title2.bold())
                 Text(viewModel.receipt.purchaseDate, style: .date)
-                Text("kr \(viewModel.receipt.totalAmount)")
+                Text("kr \(viewModel.receipt.totalAmount as NSDecimalNumber)")
                 Text(viewModel.receipt.category)
                 Text(viewModel.warrantyStatusText)
                     .font(.subheadline)
@@ -39,8 +39,8 @@ struct ReceiptDetailView: View {
                         HStack {
                             Text(item.descriptionText)
                             Spacer()
-                            Text("\(item.quantity)x")
-                            Text("kr \(item.lineTotal)")
+                            Text("\(item.quantity as NSDecimalNumber)x")
+                            Text("kr \(item.lineTotal as NSDecimalNumber)")
                         }
                     }
                 }

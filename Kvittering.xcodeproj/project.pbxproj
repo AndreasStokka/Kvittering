@@ -1,210 +1,407 @@
 // !$*UTF8*$!
 {
-archiveVersion = 1;
-classes = {};
-objectVersion = 56;
-objects = {
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
 
 /* Begin PBXBuildFile section */
-A1APP1 /* KvitteringApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1APP0 /* KvitteringApp.swift */; };
-A1MODEL1 /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1MODEL0 /* Receipt.swift */; };
-A1SERV1 /* FeatureAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV0 /* FeatureAccess.swift */; };
-A1SERV2 /* CategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV3 /* CategoryService.swift */; };
-A1SERV4 /* WarrantyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV5 /* WarrantyService.swift */; };
-A1SERV6 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV7 /* ImageStore.swift */; };
-A1SERV8 /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV9 /* OCRService.swift */; };
-A1SERV10 /* ReceiptRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV11 /* ReceiptRepository.swift */; };
-A1VM1 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM0 /* HomeViewModel.swift */; };
-A1VM2 /* ReceiptListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM3 /* ReceiptListViewModel.swift */; };
-A1VM4 /* EditReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM5 /* EditReceiptViewModel.swift */; };
-A1VM6 /* ReceiptDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM7 /* ReceiptDetailViewModel.swift */; };
-A1VM8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM9 /* SettingsViewModel.swift */; };
-A1VIEW1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW0 /* ContentView.swift */; };
-A1VIEW2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW3 /* HomeView.swift */; };
-A1VIEW4 /* NewReceiptOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW5 /* NewReceiptOptionsView.swift */; };
-A1VIEW6 /* ReceiptListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW7 /* ReceiptListView.swift */; };
-A1VIEW8 /* ReceiptDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW9 /* ReceiptDetailView.swift */; };
-A1VIEW10 /* EditReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW11 /* EditReceiptView.swift */; };
-A1VIEW12 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW13 /* SettingsView.swift */; };
-A1UTIL1 /* DocumentScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL0 /* DocumentScanner.swift */; };
-A1UTIL2 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL3 /* PhotoPicker.swift */; };
-A1UTIL4 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL5 /* ActivityView.swift */; };
-A1PLIST1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1PLIST0 /* Info.plist */; };
-A1TEST1 /* OCRServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST0 /* OCRServiceTests.swift */; };
+		A1APP1 /* KvitteringApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1APP0 /* KvitteringApp.swift */; };
+		A1MODEL1 /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1MODEL0 /* Receipt.swift */; };
+		A1PLIST1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1PLIST0 /* Info.plist */; };
+		A1SERV1 /* FeatureAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV0 /* FeatureAccess.swift */; };
+		A1SERV10 /* ReceiptRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV11 /* ReceiptRepository.swift */; };
+		A1SERV2 /* CategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV3 /* CategoryService.swift */; };
+		A1SERV4 /* WarrantyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV5 /* WarrantyService.swift */; };
+		A1SERV6 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV7 /* ImageStore.swift */; };
+		A1SERV8 /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV9 /* OCRService.swift */; };
+		A1TEST1 /* OCRServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST0 /* OCRServiceTests.swift */; };
+		A1UTIL1 /* DocumentScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL0 /* DocumentScanner.swift */; };
+		A1UTIL2 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL3 /* PhotoPicker.swift */; };
+		A1UTIL4 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL5 /* ActivityView.swift */; };
+		A1UTIL6 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL7 /* CameraPicker.swift */; };
+		A1VIEW1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW0 /* ContentView.swift */; };
+		A1VIEW10 /* EditReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW11 /* EditReceiptView.swift */; };
+		A1VIEW12 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW13 /* SettingsView.swift */; };
+		A1VIEW2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW3 /* HomeView.swift */; };
+		A1VIEW4 /* NewReceiptOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW5 /* NewReceiptOptionsView.swift */; };
+		A1VIEW6 /* ReceiptListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW7 /* ReceiptListView.swift */; };
+		A1VIEW8 /* ReceiptDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW9 /* ReceiptDetailView.swift */; };
+		A1VM1 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM0 /* HomeViewModel.swift */; };
+		A1VM2 /* ReceiptListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM3 /* ReceiptListViewModel.swift */; };
+		A1VM4 /* EditReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM5 /* EditReceiptViewModel.swift */; };
+		A1VM6 /* ReceiptDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM7 /* ReceiptDetailViewModel.swift */; };
+		A1VM8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM9 /* SettingsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-A1APP0 /* KvitteringApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KvitteringApp.swift; sourceTree = "<group>"; };
-A1MODEL0 /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
-A1SERV0 /* FeatureAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAccess.swift; sourceTree = "<group>"; };
-A1SERV3 /* CategoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryService.swift; sourceTree = "<group>"; };
-A1SERV5 /* WarrantyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarrantyService.swift; sourceTree = "<group>"; };
-A1SERV7 /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
-A1SERV9 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
-A1SERV11 /* ReceiptRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRepository.swift; sourceTree = "<group>"; };
-A1VM0 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-A1VM3 /* ReceiptListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListViewModel.swift; sourceTree = "<group>"; };
-A1VM5 /* EditReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptViewModel.swift; sourceTree = "<group>"; };
-A1VM7 /* ReceiptDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailViewModel.swift; sourceTree = "<group>"; };
-A1VM9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-A1VIEW0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-A1VIEW3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-A1VIEW5 /* NewReceiptOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReceiptOptionsView.swift; sourceTree = "<group>"; };
-A1VIEW7 /* ReceiptListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListView.swift; sourceTree = "<group>"; };
-A1VIEW9 /* ReceiptDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailView.swift; sourceTree = "<group>"; };
-A1VIEW11 /* EditReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptView.swift; sourceTree = "<group>"; };
-A1VIEW13 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-A1UTIL0 /* DocumentScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentScanner.swift; sourceTree = "<group>"; };
-A1UTIL3 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
-A1UTIL5 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
-A1PLIST0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-A1TEST0 /* OCRServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServiceTests.swift; sourceTree = "<group>"; };
-PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
-TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KvitteringTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1APP0 /* KvitteringApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KvitteringApp.swift; sourceTree = "<group>"; };
+		A1MODEL0 /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
+		A1PLIST0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1SERV0 /* FeatureAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAccess.swift; sourceTree = "<group>"; };
+		A1SERV11 /* ReceiptRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRepository.swift; sourceTree = "<group>"; };
+		A1SERV3 /* CategoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryService.swift; sourceTree = "<group>"; };
+		A1SERV5 /* WarrantyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarrantyService.swift; sourceTree = "<group>"; };
+		A1SERV7 /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
+		A1SERV9 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
+		A1TEST0 /* OCRServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServiceTests.swift; sourceTree = "<group>"; };
+		A1UTIL0 /* DocumentScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentScanner.swift; sourceTree = "<group>"; };
+		A1UTIL3 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
+		A1UTIL5 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		A1UTIL7 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		A1VIEW0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1VIEW11 /* EditReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptView.swift; sourceTree = "<group>"; };
+		A1VIEW13 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1VIEW3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A1VIEW5 /* NewReceiptOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReceiptOptionsView.swift; sourceTree = "<group>"; };
+		A1VIEW7 /* ReceiptListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListView.swift; sourceTree = "<group>"; };
+		A1VIEW9 /* ReceiptDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailView.swift; sourceTree = "<group>"; };
+		A1VM0 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		A1VM3 /* ReceiptListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListViewModel.swift; sourceTree = "<group>"; };
+		A1VM5 /* EditReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptViewModel.swift; sourceTree = "<group>"; };
+		A1VM7 /* ReceiptDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailViewModel.swift; sourceTree = "<group>"; };
+		A1VM9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Kvittering.app; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = KvitteringTests.xctest; path = .xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-FRAMEWORKS /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-TESTFRAMEWORKS /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		FRAMEWORKS /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TESTFRAMEWORKS /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-ROOT /* Project */ = {
-isa = PBXGroup;
-children = (
-A1SRC /* Kvittering */,
-A1TESTGRP /* KvitteringTests */,
-PRODS /* Products */
-);
-sourceTree = "<group>";
-};
-A1SRC /* Kvittering */ = {
-isa = PBXGroup;
-children = (
-A1APP0,
-A1PLIST0,
-MODELS,
-SERVICES,
-VIEWMODELS,
-VIEWS,
-UTILS
-);
-path = Kvittering;
-sourceTree = "<group>";
-};
-MODELS = {isa = PBXGroup; children = (A1MODEL0); path = Models; sourceTree = "<group>"; };
-SERVICES = {isa = PBXGroup; children = (A1SERV0, A1SERV3, A1SERV5, A1SERV7, A1SERV9, A1SERV11); path = Services; sourceTree = "<group>"; };
-VIEWMODELS = {isa = PBXGroup; children = (A1VM0, A1VM3, A1VM5, A1VM7, A1VM9); path = ViewModels; sourceTree = "<group>"; };
-VIEWS = {isa = PBXGroup; children = (A1VIEW0, A1VIEW3, A1VIEW5, A1VIEW7, A1VIEW9, A1VIEW11, A1VIEW13); path = Views; sourceTree = "<group>"; };
-UTILS = {isa = PBXGroup; children = (A1UTIL0, A1UTIL3, A1UTIL5); path = Utilities; sourceTree = "<group>"; };
-A1TESTGRP = {isa = PBXGroup; children = (A1TEST0); path = KvitteringTests; sourceTree = "<group>"; };
-PRODS = {isa = PBXGroup; children = (PRODID, TESTPROD); name = Products; sourceTree = "<group>"; };
+		A1SRC /* Kvittering */ = {
+			isa = PBXGroup;
+			children = (
+				A1APP0 /* KvitteringApp.swift */,
+				A1PLIST0 /* Info.plist */,
+				MODELS /* Models */,
+				SERVICES /* Services */,
+				VIEWMODELS /* ViewModels */,
+				VIEWS /* Views */,
+				UTILS /* Utilities */,
+			);
+			path = Kvittering;
+			sourceTree = "<group>";
+		};
+		A1TESTGRP /* KvitteringTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1TEST0 /* OCRServiceTests.swift */,
+			);
+			path = KvitteringTests;
+			sourceTree = "<group>";
+		};
+		MODELS /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1MODEL0 /* Receipt.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		PRODS /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				PRODID /* .app */,
+				TESTPROD /* KvitteringTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ROOT = {
+			isa = PBXGroup;
+			children = (
+				A1SRC /* Kvittering */,
+				A1TESTGRP /* KvitteringTests */,
+				PRODS /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		SERVICES /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1SERV0 /* FeatureAccess.swift */,
+				A1SERV3 /* CategoryService.swift */,
+				A1SERV5 /* WarrantyService.swift */,
+				A1SERV7 /* ImageStore.swift */,
+				A1SERV9 /* OCRService.swift */,
+				A1SERV11 /* ReceiptRepository.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		UTILS /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				A1UTIL0 /* DocumentScanner.swift */,
+				A1UTIL3 /* PhotoPicker.swift */,
+				A1UTIL5 /* ActivityView.swift */,
+				A1UTIL7 /* CameraPicker.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		VIEWMODELS /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1VM0 /* HomeViewModel.swift */,
+				A1VM3 /* ReceiptListViewModel.swift */,
+				A1VM5 /* EditReceiptViewModel.swift */,
+				A1VM7 /* ReceiptDetailViewModel.swift */,
+				A1VM9 /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		VIEWS /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1VIEW0 /* ContentView.swift */,
+				A1VIEW3 /* HomeView.swift */,
+				A1VIEW5 /* NewReceiptOptionsView.swift */,
+				A1VIEW7 /* ReceiptListView.swift */,
+				A1VIEW9 /* ReceiptDetailView.swift */,
+				A1VIEW11 /* EditReceiptView.swift */,
+				A1VIEW13 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-APPTARGET /* Kvittering */ = {
-isa = PBXNativeTarget;
-buildConfigurationList = APPCONFIGLIST;
-buildPhases = (
-SOURCES,
-FRAMEWORKS,
-RESOURCES
-);
-buildRules = ();
-dependencies = ();
-name = Kvittering;
-productName = Kvittering;
-productReference = PRODID;
-productType = "com.apple.product-type.application";
-};
-TESTTARGET /* KvitteringTests */ = {
-isa = PBXNativeTarget;
-buildConfigurationList = TESTCONFIGLIST;
-buildPhases = (
-TESTSOURCES,
-TESTFRAMEWORKS,
-TESTRESOURCES
-);
-buildRules = ();
-dependencies = ();
-name = KvitteringTests;
-productName = KvitteringTests;
-productReference = TESTPROD;
-productType = "com.apple.product-type.bundle.unit-test";
-};
+		APPTARGET /* Kvittering */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = APPCONFIGLIST /* Build configuration list for PBXNativeTarget "Kvittering" */;
+			buildPhases = (
+				SOURCES /* Sources */,
+				FRAMEWORKS /* Frameworks */,
+				RESOURCES /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Kvittering;
+			productName = Kvittering;
+			productReference = PRODID /* .app */;
+			productType = "com.apple.product-type.application";
+		};
+		TESTTARGET /* KvitteringTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TESTCONFIGLIST /* Build configuration list for PBXNativeTarget "KvitteringTests" */;
+			buildPhases = (
+				TESTSOURCES /* Sources */,
+				TESTFRAMEWORKS /* Frameworks */,
+				TESTRESOURCES /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KvitteringTests;
+			productName = KvitteringTests;
+			productReference = TESTPROD /* KvitteringTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-PROJECT /* Project object */ = {
-isa = PBXProject;
-attributes = { LastSwiftUpdateCheck = 9999; LastUpgradeCheck = 9999; ORGANIZATIONNAME = ""; };
-buildConfigurationList = PROJCONFIGLIST;
-compatibilityVersion = "Xcode 14.0";
-developmentRegion = en;
-hasScannedForEncodings = 0;
-knownRegions = (
-en,
-);
-mainGroup = ROOT;
-productRefGroup = PRODS;
-targets = (
-APPTARGET,
-TESTTARGET
-);
-};
+		PROJECT /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 9999;
+				LastUpgradeCheck = 9999;
+				ORGANIZATIONNAME = "";
+			};
+			buildConfigurationList = PROJCONFIGLIST /* Build configuration list for PBXProject "Kvittering" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = ROOT;
+			productRefGroup = PRODS /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				APPTARGET /* Kvittering */,
+				TESTTARGET /* KvitteringTests */,
+			);
+		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-RESOURCES /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A1PLIST1); runOnlyForDeploymentPostprocessing = 0; };
-TESTRESOURCES /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		RESOURCES /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TESTRESOURCES /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-SOURCES /* Sources */ = {
-isa = PBXSourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-A1APP1,
-A1MODEL1,
-A1SERV1,
-A1SERV2,
-A1SERV4,
-A1SERV6,
-A1SERV8,
-A1SERV10,
-A1VM1,
-A1VM2,
-A1VM4,
-A1VM6,
-A1VM8,
-A1VIEW1,
-A1VIEW2,
-A1VIEW4,
-A1VIEW6,
-A1VIEW8,
-A1VIEW10,
-A1VIEW12,
-A1UTIL1,
-A1UTIL2,
-A1UTIL4
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
-TESTSOURCES /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A1TEST1); runOnlyForDeploymentPostprocessing = 0; };
+		SOURCES /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1APP1 /* KvitteringApp.swift in Sources */,
+				A1MODEL1 /* Receipt.swift in Sources */,
+				A1SERV1 /* FeatureAccess.swift in Sources */,
+				A1SERV2 /* CategoryService.swift in Sources */,
+				A1SERV4 /* WarrantyService.swift in Sources */,
+				A1SERV6 /* ImageStore.swift in Sources */,
+				A1SERV8 /* OCRService.swift in Sources */,
+				A1SERV10 /* ReceiptRepository.swift in Sources */,
+				A1VM1 /* HomeViewModel.swift in Sources */,
+				A1VM2 /* ReceiptListViewModel.swift in Sources */,
+				A1VM4 /* EditReceiptViewModel.swift in Sources */,
+				A1VM6 /* ReceiptDetailViewModel.swift in Sources */,
+				A1VM8 /* SettingsViewModel.swift in Sources */,
+				A1VIEW1 /* ContentView.swift in Sources */,
+				A1VIEW2 /* HomeView.swift in Sources */,
+				A1VIEW4 /* NewReceiptOptionsView.swift in Sources */,
+				A1VIEW6 /* ReceiptListView.swift in Sources */,
+				A1VIEW8 /* ReceiptDetailView.swift in Sources */,
+				A1VIEW10 /* EditReceiptView.swift in Sources */,
+				A1VIEW12 /* SettingsView.swift in Sources */,
+				A1UTIL1 /* DocumentScanner.swift in Sources */,
+				A1UTIL2 /* PhotoPicker.swift in Sources */,
+				A1UTIL4 /* ActivityView.swift in Sources */,
+				A1UTIL6 /* CameraPicker.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TESTSOURCES /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1TEST1 /* OCRServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-DEBUG = {isa = XCBuildConfiguration; buildSettings = { SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2"; PRODUCT_BUNDLE_IDENTIFIER = "com.example.Kvittering"; INFOPLIST_FILE = Kvittering/Info.plist; GENERATE_INFOPLIST_FILE = NO; SWIFT_EMIT_LOC_STRINGS = YES; ASSETCATALOG_COMPILER_APPICON_NAME = ""; }; name = Debug; };
-RELEASE = {isa = XCBuildConfiguration; buildSettings = { SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2"; PRODUCT_BUNDLE_IDENTIFIER = "com.example.Kvittering"; INFOPLIST_FILE = Kvittering/Info.plist; GENERATE_INFOPLIST_FILE = NO; SWIFT_EMIT_LOC_STRINGS = YES; ASSETCATALOG_COMPILER_APPICON_NAME = ""; }; name = Release; };
-TESTDEBUG = {isa = XCBuildConfiguration; buildSettings = { SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; PRODUCT_BUNDLE_IDENTIFIER = "com.example.KvitteringTests"; }; name = Debug; };
-TESTRELEASE = {isa = XCBuildConfiguration; buildSettings = { SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; PRODUCT_BUNDLE_IDENTIFIER = "com.example.KvitteringTests"; }; name = Release; };
+		DEBUG /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Kvittering/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		RELEASE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Kvittering/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		TESTDEBUG /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		TESTRELEASE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-PROJCONFIGLIST = {isa = XCConfigurationList; buildConfigurations = (DEBUG, RELEASE); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
-APPCONFIGLIST = {isa = XCConfigurationList; buildConfigurations = (DEBUG, RELEASE); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
-TESTCONFIGLIST = {isa = XCConfigurationList; buildConfigurations = (TESTDEBUG, TESTRELEASE); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
+		APPCONFIGLIST /* Build configuration list for PBXNativeTarget "Kvittering" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEBUG /* Debug */,
+				RELEASE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		PROJCONFIGLIST /* Build configuration list for PBXProject "Kvittering" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEBUG /* Debug */,
+				RELEASE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		TESTCONFIGLIST /* Build configuration list for PBXNativeTarget "KvitteringTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TESTDEBUG /* Debug */,
+				TESTRELEASE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 /* End XCConfigurationList section */
-};
-rootObject = PROJECT /* Project object */;
+	};
+	rootObject = PROJECT /* Project object */;
 }

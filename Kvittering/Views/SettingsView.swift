@@ -3,7 +3,7 @@ import SwiftData
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel = SettingsViewModel(context: ModelContext.preview)
+    @StateObject private var viewModel = SettingsViewModel()
     @State private var showDeleteAlert = false
 
     var body: some View {

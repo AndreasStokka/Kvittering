@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 @MainActor
 final class ReceiptRepository {
@@ -13,34 +14,61 @@ final class ReceiptRepository {
 
     func fetchReceipts(category: Category? = nil, searchText: String = "", dateRange: ClosedRange<Date>? = nil) -> [Receipt] {
         var descriptor = FetchDescriptor<Receipt>(sortBy: [SortDescriptor(\.purchaseDate, order: .reverse)])
-        var predicates: [Predicate<Receipt>] = []
 
+        // Build predicate based on what filters are provided
         if let category {
-            predicates.append(#Predicate<Receipt> { $0.category == category.rawValue })
-        }
-
-        if !searchText.isEmpty {
-            let text = searchText.lowercased()
-            predicates.append(#Predicate<Receipt> { receipt in
-                receipt.storeName.lowercased().contains(text)
-            })
-        }
-
-        if let dateRange {
-            predicates.append(#Predicate<Receipt> { receipt in
-                dateRange.contains(receipt.purchaseDate)
-            })
-        }
-
-        if !predicates.isEmpty {
-            descriptor.predicate = predicates.reduce(Predicate.alwaysTrue) { partial, next in
-                #Predicate<Receipt> { receipt in
-                    partial.evaluate(receipt) && next.evaluate(receipt)
+            let categoryValue = category.rawValue
+            if !searchText.isEmpty {
+                let searchLower = searchText.lowercased()
+                if let dateRange {
+                    let startDate = dateRange.lowerBound
+                    let endDate = dateRange.upperBound
+                    descriptor.predicate = #Predicate<Receipt> { receipt in
+                        receipt.category == categoryValue && receipt.storeName.localizedStandardContains(searchLower) && receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+                    }
+                } else {
+                    descriptor.predicate = #Predicate<Receipt> { receipt in
+                        receipt.category == categoryValue && receipt.storeName.localizedStandardContains(searchLower)
+                    }
                 }
+            } else if let dateRange {
+                let startDate = dateRange.lowerBound
+                let endDate = dateRange.upperBound
+                descriptor.predicate = #Predicate<Receipt> { receipt in
+                    receipt.category == categoryValue && receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+                }
+            } else {
+                descriptor.predicate = #Predicate<Receipt> { receipt in
+                    receipt.category == categoryValue
+                }
+            }
+        } else if !searchText.isEmpty {
+            let searchLower = searchText.lowercased()
+            if let dateRange {
+                let startDate = dateRange.lowerBound
+                let endDate = dateRange.upperBound
+                descriptor.predicate = #Predicate<Receipt> { receipt in
+                    receipt.storeName.localizedStandardContains(searchLower) && receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+                }
+            } else {
+                descriptor.predicate = #Predicate<Receipt> { receipt in
+                    receipt.storeName.localizedStandardContains(searchLower)
+                }
+            }
+        } else if let dateRange {
+            let startDate = dateRange.lowerBound
+            let endDate = dateRange.upperBound
+            descriptor.predicate = #Predicate<Receipt> { receipt in
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
             }
         }
 
-        return (try? context.fetch(descriptor)) ?? []
+        do {
+            return try context.fetch(descriptor)
+        } catch {
+            print("Feil ved henting av kvitteringer: \(error.localizedDescription)")
+            return []
+        }
     }
 
     func add(receipt: Receipt, image: UIImage?) throws {

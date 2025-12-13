@@ -7,6 +7,7 @@ struct OCRResult {
     var purchaseDate: Date?
     var totalAmount: Decimal?
     var lineItems: [LineItem]
+    var rawText: String = "" // For debugging
 }
 
 struct OCRService {
@@ -14,66 +15,232 @@ struct OCRService {
         guard let cgImage = image.cgImage else { throw NSError(domain: "OCR", code: 0) }
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
-        request.recognitionLanguages = ["nb-NO", "no", "en-US"]
+        // Bruk kun engelske språk for å unngå locale-problemer
+        request.recognitionLanguages = ["en-US", "en-GB"]
+        request.usesLanguageCorrection = true
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         try handler.perform([request])
         let observations = request.results ?? []
-        return observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+        let text = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+        print("OCR Raw text:\n\(text)")
+        return text
     }
 
     func parse(from text: String) -> OCRResult {
         let lines = text.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        print("OCR Lines: \(lines)")
         let store = detectStoreName(in: lines)
         let date = detectDate(in: lines)
         let total = detectTotal(in: lines)
         let items: [LineItem] = []
-        return OCRResult(storeName: store, purchaseDate: date, totalAmount: total, lineItems: items)
+        print("OCR Result - Store: \(store ?? "nil"), Date: \(String(describing: date)), Total: \(String(describing: total))")
+        return OCRResult(storeName: store, purchaseDate: date, totalAmount: total, lineItems: items, rawText: text)
     }
 
     private func detectStoreName(in lines: [String]) -> String? {
-        for line in lines.prefix(5) {
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            if detectDate(in: [trimmed]) == nil, detectTotal(in: [trimmed]) == nil {
-                return trimmed.capitalized
+        // Kjente butikknavn å se etter
+        let knownStores = ["sport 1", "rema", "kiwi", "coop", "extra", "meny", "bunnpris", "spar", "joker", "europris", "jula", "byggmax", "obs", "elkjøp", "power", "xxl"]
+        
+        // Først: Sjekk om noen kjente butikknavn finnes
+        for line in lines {
+            let lineLower = line.lowercased()
+            for store in knownStores {
+                if lineLower.contains(store) {
+                    // Returner hele linjen eller del av den
+                    return line.trimmingCharacters(in: .whitespaces)
+                }
             }
+        }
+        
+        // Fallback: Finn første gyldige linje
+        for line in lines.prefix(15) {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            
+            // Hopp over veldig korte linjer
+            guard trimmed.count > 3 else { continue }
+            
+            // Hopp over linjer som bare er tall eller spesialtegn
+            if trimmed.allSatisfy({ $0.isNumber || $0.isWhitespace || $0 == "." || $0 == "-" || $0 == "/" || $0 == ":" }) {
+                continue
+            }
+            
+            // Hopp over maskerte kortnumre (XXXX XXXX XXXX XXX2)
+            if trimmed.contains("XXXX") || trimmed.contains("xxxx") || trimmed.contains("****") {
+                continue
+            }
+            
+            // Hopp over linjer med X og tall (maskerte numre)
+            let xCount = trimmed.filter { $0 == "X" || $0 == "x" || $0 == "*" }.count
+            if xCount > 3 {
+                continue
+            }
+            
+            let digitCount = trimmed.filter { $0.isNumber }.count
+            let colonCount = trimmed.filter { $0 == ":" }.count
+            
+            // Hopp over hvis det er for mange tall eller koloner
+            if digitCount > trimmed.count / 2 || colonCount > 0 {
+                continue
+            }
+            
+            // Hopp over hvis det er en dato eller beløp
+            if detectDate(in: [trimmed]) != nil {
+                continue
+            }
+            
+            // Sjekk om det er minimum 3 bokstaver
+            let letterCount = trimmed.filter { $0.isLetter }.count
+            guard letterCount >= 3 else { continue }
+            
+            return trimmed
         }
         return nil
     }
 
     private func detectDate(in lines: [String]) -> Date? {
-        let patterns = ["\\b(\\d{2})[\\./-](\\d{2})[\\./-](\\d{4})\\b"]
+        // Norsk format: dd.MM.yyyy eller yyyy-MM-dd
+        let patterns = [
+            "\\b(\\d{4})-(\\d{2})-(\\d{2})\\b",  // 2025-10-16
+            "\\b(\\d{2})[\\./-](\\d{2})[\\./-](\\d{4})\\b"  // 16.10.2025
+        ]
+        
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
         for line in lines {
-            for pattern in patterns {
-                if let match = line.range(of: pattern, options: .regularExpression) {
-                    let dateString = String(line[match])
-                    let formatter = DateFormatter()
-                    formatter.locale = Locale(identifier: "nb_NO")
-                    formatter.dateFormat = "dd.MM.yyyy"
-                    if let date = formatter.date(from: dateString.replacingOccurrences(of: "-", with: ".").replacingOccurrences(of: "/", with: ".")) {
+            // Først prøv yyyy-MM-dd format
+            if let match = line.range(of: patterns[0], options: .regularExpression) {
+                let dateString = String(line[match])
+                formatter.dateFormat = "yyyy-MM-dd"
+                if let date = formatter.date(from: dateString) {
+                    // Valider at datoen er rimelig (mellom 2020 og 2030)
+                    let year = Calendar.current.component(.year, from: date)
+                    if year >= 2020 && year <= 2030 {
+                        print("  -> Found date (yyyy-MM-dd): \(dateString)")
+                        return date
+                    }
+                }
+            }
+            
+            // Så prøv dd.MM.yyyy format
+            if let match = line.range(of: patterns[1], options: .regularExpression) {
+                let dateString = String(line[match])
+                let normalized = dateString.replacingOccurrences(of: "-", with: ".").replacingOccurrences(of: "/", with: ".")
+                formatter.dateFormat = "dd.MM.yyyy"
+                if let date = formatter.date(from: normalized) {
+                    let year = Calendar.current.component(.year, from: date)
+                    if year >= 2020 && year <= 2030 {
+                        print("  -> Found date (dd.MM.yyyy): \(normalized)")
                         return date
                     }
                 }
             }
         }
+        
+        // Fallback: Prøv å finne dato i "NOK 2379.15" linjer som ofte har dato
+        for line in lines {
+            // Søk etter dato som del av en lengre streng
+            let nsLine = line as NSString
+            if let regex = try? NSRegularExpression(pattern: "(\\d{4})-(\\d{1,2})-(\\d{1,2})"),
+               let match = regex.firstMatch(in: line, range: NSRange(location: 0, length: nsLine.length)) {
+                let dateString = nsLine.substring(with: match.range)
+                formatter.dateFormat = "yyyy-M-d"
+                if let date = formatter.date(from: dateString) {
+                    let year = Calendar.current.component(.year, from: date)
+                    if year >= 2020 && year <= 2030 {
+                        print("  -> Found date (fallback): \(dateString)")
+                        return date
+                    }
+                }
+            }
+        }
+        
         return nil
     }
 
     private func detectTotal(in lines: [String]) -> Decimal? {
-        let amountPattern = "[0-9]{1,3}(?:[\\s.]?[0-9]{3})*(?:,[0-9]{2})?"
-        var candidates: [Decimal] = []
-        for line in lines {
+        // Støtt både norsk (2 379,15) og engelsk (2 379.15) format
+        // Pattern matcher: tall med valgfritt tusenskilletegn, så enten komma eller punktum, så to desimaler
+        let amountPatterns = [
+            "[0-9]{1,3}(?:[\\s][0-9]{3})*[.,][0-9]{2}",  // 2 379.15 eller 2 379,15
+            "[0-9]{3,}[.,][0-9]{2}"                        // 2379.15 eller 2379,15
+        ]
+        let totalKeywords = ["totalt", "total", "sum", "å betale", "bank", "beløp", "artikkel", "betalt", "varekjøp", "nok"]
+        let skipKeywords = ["rabatt", "mva", "grunnlag", "medlems"]
+        
+        var candidates: [(amount: Decimal, priority: Int, line: String)] = []
+        var afterTotalKeyword = false
+        
+        for (_, line) in lines.enumerated() {
+            let lineLower = line.lowercased()
+            
+            // Sjekk om denne linjen inneholder total-nøkkelord
+            let hasKeyword = totalKeywords.contains(where: { lineLower.contains($0) })
+            let shouldSkip = skipKeywords.contains(where: { lineLower.contains($0) })
+            
+            if shouldSkip { 
+                afterTotalKeyword = false
+                continue 
+            }
+            
             let nsLine = line as NSString
-            let regex = try? NSRegularExpression(pattern: amountPattern)
-            let matches = regex?.matches(in: line, range: NSRange(location: 0, length: nsLine.length)) ?? []
-            for match in matches {
-                let raw = nsLine.substring(with: match.range)
-                let normalized = raw.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ".", with: "")
-                let decimalString = normalized.replacingOccurrences(of: ",", with: ".")
-                if let value = Decimal(string: decimalString) {
-                    candidates.append(value)
+            
+            for pattern in amountPatterns {
+                guard let regex = try? NSRegularExpression(pattern: pattern) else { continue }
+                let matches = regex.matches(in: line, range: NSRange(location: 0, length: nsLine.length))
+                
+                for match in matches {
+                    let raw = nsLine.substring(with: match.range)
+                    // Normaliser: fjern mellomrom, erstatt komma med punktum
+                    let normalized = raw
+                        .replacingOccurrences(of: " ", with: "")
+                        .replacingOccurrences(of: ",", with: ".")
+                    
+                    if let value = Decimal(string: normalized) {
+                        // Filtrer ut urealistiske beløp
+                        guard value >= 10 && value < 100000 else { continue }
+                        
+                        // Prioritering:
+                        // 20: Beløp på linje rett etter "Totalt" eller "Bank:"
+                        // 15: Beløp på samme linje som nøkkelord
+                        // 10: Beløp som gjentar seg (sannsynligvis total)
+                        // 1: Vanlig beløp
+                        var priority = 1
+                        
+                        if afterTotalKeyword {
+                            priority = 20
+                        } else if hasKeyword {
+                            priority = 15
+                        }
+                        
+                        // Sjekk om dette beløpet gjentar seg (normaliser for sammenligning)
+                        let normalizedForCompare = normalized
+                        let repeatCount = lines.filter { line in
+                            let lineNorm = line.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: ".")
+                            return lineNorm.contains(normalizedForCompare)
+                        }.count
+                        if repeatCount >= 2 {
+                            priority = max(priority, 10)
+                        }
+                        
+                        candidates.append((value, priority, line))
+                        print("  -> Found amount: \(raw) -> \(value) (priority: \(priority))")
+                    }
                 }
             }
+            
+            // Sett flagg for neste iterasjon
+            afterTotalKeyword = hasKeyword
         }
-        return candidates.max()
+        
+        print("OCR Amount candidates count: \(candidates.count)")
+        
+        // Sorter etter prioritet først, deretter beløp
+        return candidates.sorted { 
+            if $0.priority != $1.priority {
+                return $0.priority > $1.priority
+            }
+            return $0.amount > $1.amount
+        }.first?.amount
     }
 }

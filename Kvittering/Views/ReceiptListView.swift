@@ -30,7 +30,7 @@ struct ReceiptListView: View {
                                     .font(.headline)
                                 Text(receipt.purchaseDate, style: .date)
                                     .font(.subheadline)
-                                Text("kr \(receipt.totalAmount)")
+                                Text("kr \(receipt.totalAmount as NSDecimalNumber)")
                                     .font(.subheadline)
                             }
                         }

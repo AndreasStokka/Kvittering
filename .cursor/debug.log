@@ -1,0 +1,7 @@
+{"sessionId":"debug-session","message":"Starter OCR-behandling","hypothesisId":"A","data":{"hasImage":true},"location":"NewReceiptOptionsView.swift:71","timestamp":1765661674629,"runId":"run1"}
+{"sessionId":"debug-session","location":"NewReceiptOptionsView.swift:85","runId":"run1","data":{"textLength":557},"message":"OCR tekst hentet","timestamp":1765661675166,"hypothesisId":"A"}
+{"location":"NewReceiptOptionsView.swift:95","sessionId":"debug-session","runId":"run1","data":{"lineItemsCount":0,"hasStoreName":true,"hasDate":false,"hasAmount":true},"message":"OCR-resultat parsert","hypothesisId":"A","timestamp":1765661675170}
+{"runId":"run1","message":"EditReceiptView onAppear","timestamp":1765661675198,"sessionId":"debug-session","hypothesisId":"C","location":"EditReceiptView.swift:67","data":{"hasSourceImage":true,"hasOcrResult":true,"hasModelContext":true}}
+{"runId":"run1","message":"attachContext kalt","timestamp":1765661675199,"sessionId":"debug-session","hypothesisId":"C","location":"EditReceiptViewModel.swift:41","data":{"hasContext":true}}
+{"message":"Repository opprettet","timestamp":1765661675199,"sessionId":"debug-session","hypothesisId":"C","runId":"run1","data":{"hasRepository":true},"location":"EditReceiptViewModel.swift:60"}
+{"message":"Etter attachContext","timestamp":1765661675199,"sessionId":"debug-session","hypothesisId":"C","runId":"run1","data":{"attachContextCalled":true},"location":"EditReceiptView.swift:85"}

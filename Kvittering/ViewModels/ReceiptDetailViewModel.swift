@@ -7,13 +7,13 @@ final class ReceiptDetailViewModel: ObservableObject {
     @Published var receipt: Receipt
     @Published var shareItems: [Any] = []
 
-    private let repository: ReceiptRepository
+    private var repository: ReceiptRepository?
     private let imageStore: ImageStore
 
-    init(receipt: Receipt, context: ModelContext, imageStore: ImageStore = ImageStore()) {
+    init(receipt: Receipt, imageStore: ImageStore = ImageStore()) {
         self.receipt = receipt
-        self.repository = ReceiptRepository(context: context, imageStore: imageStore)
         self.imageStore = imageStore
+        // Repository vil bli satt i attach()
     }
 
     func attach(context: ModelContext) {
@@ -32,6 +32,9 @@ final class ReceiptDetailViewModel: ObservableObject {
     }
 
     func delete() throws {
+        guard let repository else {
+            throw NSError(domain: "ReceiptDetailViewModel", code: 1, userInfo: [NSLocalizedDescriptionKey: "ModelContext er ikke tilkoblet"])
+        }
         try repository.delete(receipt)
     }
 
@@ -39,7 +42,7 @@ final class ReceiptDetailViewModel: ObservableObject {
         var items: [Any] = []
         if let image = image() { items.append(image) }
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "nb_NO")
+        formatter.locale = Locale(identifier: "no_NO")
         formatter.dateStyle = .medium
         let text = "Kvittering: \(receipt.storeName) – \(formatter.string(from: receipt.purchaseDate)) – kr \(receipt.totalAmount)"
         items.append(text)

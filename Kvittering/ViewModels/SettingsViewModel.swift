@@ -5,8 +5,8 @@ import SwiftData
 final class SettingsViewModel: ObservableObject {
     private var repository: ReceiptRepository?
 
-    init(context: ModelContext) {
-        repository = ReceiptRepository(context: context)
+    init() {
+        // Repository vil bli satt i attach()
     }
 
     func attach(context: ModelContext) {
@@ -14,6 +14,9 @@ final class SettingsViewModel: ObservableObject {
     }
 
     func deleteAll() throws {
-        try repository?.deleteAll()
+        guard let repository else {
+            throw NSError(domain: "SettingsViewModel", code: 1, userInfo: [NSLocalizedDescriptionKey: "ModelContext er ikke tilkoblet"])
+        }
+        try repository.deleteAll()
     }
 }

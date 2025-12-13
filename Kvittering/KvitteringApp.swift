@@ -11,7 +11,11 @@ struct KvitteringApp: App {
             LineItem.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        return try! ModelContainer(for: schema, configurations: [config])
+        do {
+            return try ModelContainer(for: schema, configurations: [config])
+        } catch {
+            fatalError("Kunne ikke opprette ModelContainer: \(error.localizedDescription)")
+        }
     }()
 
     var body: some Scene {

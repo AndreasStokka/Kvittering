@@ -3,6 +3,7 @@ import VisionKit
 
 struct DocumentScanner: UIViewControllerRepresentable {
     @Binding var image: UIImage?
+    var onError: ((Error) -> Void)?
 
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
@@ -31,6 +32,12 @@ struct DocumentScanner: UIViewControllerRepresentable {
         }
 
         func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
+            controller.dismiss(animated: true)
+        }
+        
+        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+            print("Document scanner error: \(error.localizedDescription)")
+            parent.onError?(error)
             controller.dismiss(animated: true)
         }
     }

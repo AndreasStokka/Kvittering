@@ -11,17 +11,53 @@ struct OCRResult {
 }
 
 struct OCRService {
+    /// Feiltyper for OCR-prosessering
+    enum OCRError: LocalizedError {
+        case invalidImage
+        case recognitionFailed(underlying: Error)
+        case noTextFound
+        
+        var errorDescription: String? {
+            switch self {
+            case .invalidImage:
+                return "Kunne ikke behandle bildet. Prøv å ta et nytt bilde med bedre belysning."
+            case .recognitionFailed(let error):
+                return "Tekstgjenkjenning feilet: \(error.localizedDescription)"
+            case .noTextFound:
+                return "Fant ingen tekst i bildet. Sørg for at kvitteringen er tydelig synlig."
+            }
+        }
+    }
+    
     func recognizeText(from image: UIImage) async throws -> String {
-        guard let cgImage = image.cgImage else { throw NSError(domain: "OCR", code: 0) }
+        guard let cgImage = image.cgImage else {
+            throw OCRError.invalidImage
+        }
+        
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
-        // Bruk kun engelske språk for å unngå locale-problemer
-        request.recognitionLanguages = ["en-US", "en-GB"]
+        
+        // Prioriter norsk tekst først, men behold engelsk som fallback for blandede kvitteringer.
+        // Vision støtter norsk on-device og er gratis, så dette gir bedre presisjon uten
+        // å sende data til tredjepart.
+        request.recognitionLanguages = ["nb-NO", "nn-NO", "no", "en-US", "en-GB"]
         request.usesLanguageCorrection = true
+        
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        try handler.perform([request])
+        
+        do {
+            try handler.perform([request])
+        } catch {
+            throw OCRError.recognitionFailed(underlying: error)
+        }
+        
         let observations = request.results ?? []
         let text = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+        
+        if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            throw OCRError.noTextFound
+        }
+        
         print("OCR Raw text:\n\(text)")
         return text
     }

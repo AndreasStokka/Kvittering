@@ -55,15 +55,26 @@ jobs:
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
             -destination "${{ steps.simulator.outputs.dest }}" \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath ./DerivedData
       
-      - name: Run tests
+      - name: Build for testing
         run: |
-          xcodebuild test \
+          xcodebuild build-for-testing \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
             -destination "${{ steps.simulator.outputs.dest }}" \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath ./DerivedData
+      
+      - name: Run tests
+        run: |
+          xcodebuild test-without-building \
+            -project Kvittering.xcodeproj \
+            -scheme Kvittering \
+            -destination "${{ steps.simulator.outputs.dest }}" \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath ./DerivedData
       
       - name: Analyze project
         run: |
@@ -71,4 +82,5 @@ jobs:
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
             -destination "${{ steps.simulator.outputs.dest }}" \
-            CODE_SIGNING_ALLOWED=NO || true
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath ./DerivedData || true

@@ -32,8 +32,6 @@ struct TextNormalizer {
     /// - Parameter text: Tekst som kan inneholde OCR-feil
     /// - Returns: Tekst med korrigerte norske bokstaver
     static func correctNorwegianCharacters(_ text: String) -> String {
-        var corrected = text
-        
         // Vanlige OCR-feil for norske bokstaver:
         // Æ kan bli feilgjenkjent som AE, A, eller andre tegn
         // Ø kan bli feilgjenkjent som O, 0, eller andre tegn
@@ -45,7 +43,7 @@ struct TextNormalizer {
         // Eksempel: "Forde" i kontekst av "Sport 1" burde være "Førde"
         // Men vi lar StoreNameMatcher håndtere dette for mer presis matching
         
-        return corrected
+        return text
     }
     
     /// Kapitaliserer første bokstav i hvert ord

@@ -258,6 +258,19 @@ final class ReceiptRepository {
     func add(receipt: Receipt, image: UIImage?) throws {
         if let image, let storedPath = try? imageStore.saveImage(image, id: receipt.id) {
             receipt.imagePath = storedPath
+            
+            // Lagre til fotobibliotek hvis innstillingen er aktivert
+            // Dette gjøres asynkront og feil håndteres stille (appen skal ikke krasje hvis tilgang nektes)
+            if UserDefaults.standard.bool(forKey: "saveReceiptsToPhotoLibrary") {
+                Task {
+                    do {
+                        try await imageStore.saveToPhotoLibrary(image)
+                    } catch {
+                        // Log feil, men ikke krasj appen
+                        print("Kunne ikke lagre bilde til fotobibliotek: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
         context.insert(receipt)
         try context.save()

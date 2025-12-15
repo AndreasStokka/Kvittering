@@ -32,6 +32,16 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle(isOn: $viewModel.saveToPhotoLibrary) {
+                        Label("Lagre bilder til fotobibliotek", systemImage: "photo.on.rectangle")
+                    }
+                } header: {
+                    Text("Kvitteringsbilder")
+                } footer: {
+                    Text("Når aktivert, lagres kvitteringsbilder også i telefonens fotobibliotek. Dette gjør at bildene blir inkludert i iCloud-backup.")
+                }
+                
+                Section {
                     Button(role: .destructive) { showDeleteAlert = true } label: {
                         HStack {
                             Image(systemName: "trash.fill")

@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Photos
 
 struct ImageStore {
     private let fileManager = FileManager.default
@@ -42,5 +43,23 @@ struct ImageStore {
     private func directoryURL() -> URL {
         let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         return docs.appendingPathComponent("ReceiptImages")
+    }
+    
+    /// Lagrer bilde til fotobiblioteket
+    /// - Parameter image: Bildet som skal lagres
+    func saveToPhotoLibrary(_ image: UIImage) async throws {
+        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        
+        guard status == .authorized || status == .limited else {
+            throw NSError(
+                domain: "ImageStore",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "Tilgang til fotobiblioteket ble ikke gitt"]
+            )
+        }
+        
+        try await PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.creationRequestForAsset(from: image)
+        }
     }
 }

@@ -11,6 +11,8 @@ struct OCRResult {
 }
 
 struct OCRService {
+    private let storeNameMatcher = StoreNameMatcher()
+    
     /// Feiltyper for OCR-prosessering
     enum OCRError: LocalizedError {
         case invalidImage
@@ -59,7 +61,7 @@ struct OCRService {
         }
         
         #if DEBUG
-        print("OCR Raw text:\n\(text)")
+        NSLog("🔍 OCR Raw text:\n%@", text)
         #endif
         return text
     }
@@ -69,52 +71,65 @@ struct OCRService {
         let store = detectStoreName(in: lines)
         let date = detectDate(in: lines)
         let total = detectTotal(in: lines)
-        let items: [LineItem] = []
+        
+        // Find indices for date and total to identify line items region
+        var dateIndex: Int?
+        var totalIndex: Int?
+        
+        // Find date index by checking each line
+        if let detectedDate = date {
+            for (index, line) in lines.enumerated() {
+                if let lineDate = detectDate(in: [line]) {
+                    // Compare dates by calendar components to avoid time component issues
+                    let calendar = Calendar.current
+                    if calendar.isDate(detectedDate, inSameDayAs: lineDate) {
+                        dateIndex = index
+                        break
+                    }
+                }
+            }
+        }
+        
+        // Find total index by checking each line
+        if let detectedTotal = total {
+            for (index, line) in lines.enumerated() {
+                if let lineTotal = detectTotal(in: [line]) {
+                    // Compare Decimal values directly
+                    if lineTotal == detectedTotal {
+                        totalIndex = index
+                        break
+                    }
+                }
+            }
+        }
+        
+        let items = detectLineItems(in: lines, dateIndex: dateIndex, totalIndex: totalIndex, totalAmount: total)
         
         #if DEBUG
-        print("OCR Result - Store: \(store ?? "nil"), Date: \(String(describing: date)), Total: \(String(describing: total))")
+        let dateString = date != nil ? DateFormatter.localizedString(from: date!, dateStyle: .short, timeStyle: .none) : "nil"
+        let totalString = total != nil ? String(describing: total!) : "nil"
+        NSLog("📊 OCR Result - Store: %@, Date: %@, Total: %@, LineItems: %d", 
+              store ?? "nil", 
+              dateString, 
+              totalString, 
+              items.count)
         #endif
         
         return OCRResult(storeName: store, purchaseDate: date, totalAmount: total, lineItems: items, rawText: text)
     }
 
     private func detectStoreName(in lines: [String]) -> String? {
-        // Kjente norske butikknavn å se etter
-        let knownStores = [
-            // Dagligvare
-            "rema", "kiwi", "coop", "extra", "meny", "bunnpris", "spar", "joker", "prix",
-            "marked", "obs", "mega", "oda",
-            // Sport og fritid
-            "sport 1", "xxl", "intersport", "g-sport", "anton sport",
-            // Elektronikk
-            "elkjøp", "power", "komplett", "netonnet",
-            // Bygg og hjem
-            "byggmax", "jula", "europris", "clas ohlson", "jernia", "maxbo", "montér",
-            "megaflis", "flisekompaniet", "ikea", "skeidar", "bohus", "jysk",
-            // Klær og mote
-            "h&m", "cubus", "dressmann", "bikbok", "carlings", "volt",
-            // Apotek og helse
-            "apotek 1", "boots", "vitus", "vitusapotek",
-            // Vinmonopol
-            "vinmonopolet",
-            // Bensin
-            "circle k", "esso", "shell", "uno-x", "best",
-            // Annet
-            "nille", "søstrene grene", "normal", "flying tiger"
-        ]
-        
-        // Først: Sjekk om noen kjente butikknavn finnes
+        // Først: Prøv å matche mot kjente butikknavn
         for line in lines {
-            let lineLower = line.lowercased()
-            for store in knownStores {
-                if lineLower.contains(store) {
-                    // Returner hele linjen eller del av den
-                    return line.trimmingCharacters(in: .whitespaces)
-                }
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            
+            // Prøv å matche og korrigere butikknavn
+            if let matched = storeNameMatcher.matchAndCorrect(trimmed) {
+                return matched
             }
         }
         
-        // Fallback: Finn første gyldige linje
+        // Fallback: Finn første gyldige linje og normaliser den
         for line in lines.prefix(15) {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             
@@ -154,7 +169,8 @@ struct OCRService {
             let letterCount = trimmed.filter { $0.isLetter }.count
             guard letterCount >= 3 else { continue }
             
-            return trimmed
+            // Normaliser og returner
+            return TextNormalizer.normalizeStoreName(trimmed)
         }
         return nil
     }
@@ -227,10 +243,10 @@ struct OCRService {
         let totalKeywords = ["totalt", "total", "sum", "å betale", "bank", "beløp", "artikkel", "betalt", "varekjøp", "nok"]
         let skipKeywords = ["rabatt", "mva", "grunnlag", "medlems"]
         
-        var candidates: [(amount: Decimal, priority: Int, line: String)] = []
+        var candidates: [(amount: Decimal, priority: Int, lineIndex: Int, line: String)] = []
         var afterTotalKeyword = false
         
-        for (_, line) in lines.enumerated() {
+        for (lineIndex, line) in lines.enumerated() {
             let lineLower = line.lowercased()
             
             // Sjekk om denne linjen inneholder total-nøkkelord
@@ -261,16 +277,25 @@ struct OCRService {
                         guard value >= 10 && value < 100000 else { continue }
                         
                         // Prioritering:
-                        // 20: Beløp på linje rett etter "Totalt" eller "Bank:"
-                        // 15: Beløp på samme linje som nøkkelord
+                        // 30: Beløp på linje rett etter "Totalt" eller "Bank:" (høyest prioritet)
+                        // 20: Beløp på samme linje som nøkkelord
+                        // 15: Beløp nær slutten av kvitteringen (siste 20% av linjer)
                         // 10: Beløp som gjentar seg (sannsynligvis total)
+                        // 5: Beløp som er større enn gjennomsnittet av alle beløp
                         // 1: Vanlig beløp
                         var priority = 1
                         
                         if afterTotalKeyword {
-                            priority = 20
+                            priority = 30
                         } else if hasKeyword {
-                            priority = 15
+                            priority = 20
+                        }
+                        
+                        // Prioriter beløp nær slutten av kvitteringen
+                        let totalLines = lines.count
+                        let positionRatio = Double(lineIndex) / Double(max(totalLines, 1))
+                        if positionRatio > 0.8 {
+                            priority = max(priority, 15)
                         }
                         
                         // Sjekk om dette beløpet gjentar seg (normaliser for sammenligning)
@@ -283,7 +308,13 @@ struct OCRService {
                             priority = max(priority, 10)
                         }
                         
-                        candidates.append((value, priority, line))
+                        // Prioriter større beløp (total er vanligvis størst)
+                        let allAmounts = candidates.map { $0.amount }
+                        if let maxAmount = allAmounts.max(), value >= maxAmount {
+                            priority = max(priority, 5)
+                        }
+                        
+                        candidates.append((value, priority, lineIndex, line))
                     }
                 }
             }
@@ -292,12 +323,171 @@ struct OCRService {
             afterTotalKeyword = hasKeyword
         }
         
-        // Sorter etter prioritet først, deretter beløp
-        return candidates.sorted { 
+        // Sorter etter prioritet først, deretter beløp (størst først)
+        let sorted = candidates.sorted { 
             if $0.priority != $1.priority {
                 return $0.priority > $1.priority
             }
             return $0.amount > $1.amount
-        }.first?.amount
+        }
+        
+        #if DEBUG
+        if !sorted.isEmpty {
+            NSLog("💰 OCR Beløp-kandidater (topp 3):")
+            for (index, candidate) in sorted.prefix(3).enumerated() {
+                NSLog("  %d. %@ (prioritet: %d, linje: %d)", 
+                      index + 1, 
+                      String(describing: candidate.amount), 
+                      candidate.priority, 
+                      candidate.lineIndex)
+            }
+        }
+        #endif
+        
+        return sorted.first?.amount
+    }
+    
+    private func detectLineItems(in lines: [String], dateIndex: Int?, totalIndex: Int?, totalAmount: Decimal?) -> [LineItem] {
+        guard let dateIdx = dateIndex, let totalIdx = totalIndex, dateIdx < totalIdx else {
+            // If we can't find date/total indices, try to parse all lines before the total
+            if let totalIdx = totalIndex, totalIdx > 0 {
+                return parseLineItemsFromLines(Array(lines[0..<totalIdx]), totalAmount: totalAmount)
+            }
+            return []
+        }
+        
+        // Extract lines between date and total (exclusive of date and total lines)
+        let itemLines = Array(lines[(dateIdx + 1)..<totalIdx])
+        return parseLineItemsFromLines(itemLines, totalAmount: totalAmount)
+    }
+    
+    private func parseLineItemsFromLines(_ lines: [String], totalAmount: Decimal?) -> [LineItem] {
+        var lineItems: [LineItem] = []
+        
+        // Pattern to match: product name followed by price
+        // Examples: "Melk 1L 25,90", "Brød 2x 19,50", "Vare 1 250.00"
+        let lineItemPatterns = [
+            "^(.+?)\\s+([0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})$",  // Product + price
+            "^([0-9]+[xX]?)\\s*(.+?)\\s+([0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})$"  // Quantity + product + price
+        ]
+        
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            
+            // Skip empty lines, headers, and summary lines
+            guard !trimmed.isEmpty,
+                  trimmed.count > 3,
+                  !trimmed.lowercased().contains("totalt"),
+                  !trimmed.lowercased().contains("sum"),
+                  !trimmed.lowercased().contains("mva"),
+                  !trimmed.lowercased().contains("rabatt") else {
+                continue
+            }
+            
+            // Skip lines that are mostly numbers or special characters
+            let letterCount = trimmed.filter { $0.isLetter }.count
+            guard letterCount >= 2 else { continue }
+            
+            var descriptionText: String?
+            var quantity: Decimal = 1
+            var unitPrice: Decimal?
+            var lineTotal: Decimal?
+            
+            // Try pattern with quantity first (e.g., "2x Melk 25,90")
+            if let regex = try? NSRegularExpression(pattern: lineItemPatterns[1]) {
+                let nsLine = trimmed as NSString
+                if let match = regex.firstMatch(in: trimmed, range: NSRange(location: 0, length: nsLine.length)),
+                   match.numberOfRanges >= 4 {
+                    let qtyString = nsLine.substring(with: match.range(at: 1))
+                    let productName = nsLine.substring(with: match.range(at: 2)).trimmingCharacters(in: .whitespaces)
+                    let priceString = nsLine.substring(with: match.range(at: 3))
+                    
+                    // Parse quantity (remove 'x' if present)
+                    let qtyNormalized = qtyString.replacingOccurrences(of: "x", with: "", options: .caseInsensitive)
+                    if let qty = Decimal(string: qtyNormalized), !qty.isNaN && !qty.isInfinite && qty > 0 {
+                        quantity = qty
+                    }
+                    
+                    descriptionText = productName
+                    
+                    // Parse price
+                    let normalizedPrice = priceString
+                        .replacingOccurrences(of: " ", with: "")
+                        .replacingOccurrences(of: ",", with: ".")
+                    if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                        unitPrice = price
+                        // Valider quantity før beregning
+                        if !quantity.isNaN && !quantity.isInfinite {
+                            lineTotal = quantity * price
+                            // Valider lineTotal etter beregning
+                            if lineTotal?.isNaN == true || lineTotal?.isInfinite == true {
+                                lineTotal = nil
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // If quantity pattern didn't match, try simple product + price pattern
+            if descriptionText == nil {
+                if let regex = try? NSRegularExpression(pattern: lineItemPatterns[0]) {
+                    let nsLine = trimmed as NSString
+                    if let match = regex.firstMatch(in: trimmed, range: NSRange(location: 0, length: nsLine.length)),
+                       match.numberOfRanges >= 3 {
+                        let productName = nsLine.substring(with: match.range(at: 1)).trimmingCharacters(in: .whitespaces)
+                        let priceString = nsLine.substring(with: match.range(at: 2))
+                        
+                        descriptionText = productName
+                        
+                        // Parse price
+                        let normalizedPrice = priceString
+                            .replacingOccurrences(of: " ", with: "")
+                            .replacingOccurrences(of: ",", with: ".")
+                        if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                            unitPrice = price
+                            lineTotal = price
+                        }
+                    }
+                }
+            }
+            
+            // Validate and add line item
+            if let description = descriptionText,
+               !description.isEmpty,
+               let price = unitPrice,
+               let total = lineTotal,
+               price > 0,
+               total > 0,
+               !price.isNaN,
+               !price.isInfinite,
+               !total.isNaN,
+               !total.isInfinite,
+               !quantity.isNaN,
+               !quantity.isInfinite {
+                
+                // Validate against total amount if available
+                if let receiptTotal = totalAmount, total > receiptTotal {
+                    continue // Skip if line total exceeds receipt total
+                }
+                
+                // Skip if price seems unrealistic (too high for a single item)
+                if let receiptTotal = totalAmount, price > receiptTotal {
+                    continue
+                }
+                
+                // Normaliser produktnavn før lagring
+                let normalizedDescription = TextNormalizer.normalizeProductName(description)
+                
+                let item = LineItem(
+                    descriptionText: normalizedDescription,
+                    quantity: quantity,
+                    unitPrice: price,
+                    lineTotal: total
+                )
+                lineItems.append(item)
+            }
+        }
+        
+        return lineItems
     }
 }

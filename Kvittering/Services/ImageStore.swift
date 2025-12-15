@@ -23,6 +23,13 @@ struct ImageStore {
         let url = directoryURL().appendingPathComponent(path)
         try? fileManager.removeItem(at: url)
     }
+    
+    /// Get the file URL for an image path
+    func imageFileURL(path: String) -> URL? {
+        let url = directoryURL().appendingPathComponent(path)
+        guard fileManager.fileExists(atPath: url.path) else { return nil }
+        return url
+    }
 
     private func imageURL(for id: UUID) throws -> URL {
         let dir = directoryURL()

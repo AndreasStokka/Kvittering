@@ -21,8 +21,21 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+// Forhåndsvisning i lys modus
+#Preview("Lys modus") {
     ContentView()
         .modelContainer(for: [Receipt.self, LineItem.self], inMemory: true)
         .environment(LocalFeatureAccess())
+        .environmentObject(ThemeManager())
+        .preferredColorScheme(.light)
 }
+
+// Forhåndsvisning i mørk modus
+#Preview("Mørk modus") {
+    ContentView()
+        .modelContainer(for: [Receipt.self, LineItem.self], inMemory: true)
+        .environment(LocalFeatureAccess())
+        .environmentObject(ThemeManager())
+        .preferredColorScheme(.dark)
+}
+

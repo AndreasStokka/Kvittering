@@ -30,7 +30,6 @@ struct NewReceiptOptionsView: View {
                 Button("Skann med kamera") { showScanner = true }
                 #endif
                 Button("Velg fra Bilder") { showPhotoPicker = true }
-                Button("Legg inn kvittering manuelt") { presentEditor = true }
             }
             .navigationTitle("Ny kvittering")
             .sheet(isPresented: $presentEditor) {
@@ -111,10 +110,18 @@ struct NewReceiptOptionsView: View {
         ocrResult = nil
         ocrError = nil
         
+        #if DEBUG
+        NSLog("🚀 Starting OCR process...")
+        #endif
+        
         Task {
             do {
                 let text = try await ocrService.recognizeText(from: image)
                 let result = ocrService.parse(from: text)
+                
+                #if DEBUG
+                NSLog("✅ OCR process completed successfully")
+                #endif
                 
                 await MainActor.run {
                     ocrResult = result
@@ -122,6 +129,9 @@ struct NewReceiptOptionsView: View {
                     presentEditor = true
                 }
             } catch {
+                #if DEBUG
+                NSLog("❌ OCR process failed: %@", error.localizedDescription)
+                #endif
                 await MainActor.run {
                     if let ocrErr = error as? OCRService.OCRError {
                         ocrError = ocrErr.localizedDescription

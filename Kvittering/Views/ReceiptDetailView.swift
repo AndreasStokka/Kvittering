@@ -8,6 +8,7 @@ struct ReceiptDetailView: View {
     @State private var showShare = false
     @State private var showEdit = false
     @State private var showDeleteAlert = false
+    @State private var showConsumerGuide = false
 
     init(receipt: Receipt) {
         _viewModel = StateObject(wrappedValue: ReceiptDetailViewModel(receipt: receipt))
@@ -15,41 +16,144 @@ struct ReceiptDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 20) {
                 if let image = viewModel.image() {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .cornerRadius(12)
+                        .cornerRadius(16)
+                        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
                 }
 
-                Text(viewModel.receipt.storeName)
-                    .font(.title2.bold())
-                Text(viewModel.receipt.purchaseDate, style: .date)
-                Text(formatAmount(viewModel.receipt.totalAmount))
-                Text(viewModel.receipt.category)
-                Text(viewModel.warrantyStatusText)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                if !viewModel.receipt.lineItems.isEmpty {
+                // Main info card
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(viewModel.receipt.storeName)
+                            .font(.title.bold())
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "calendar")
+                                Text(formatDate(viewModel.receipt.purchaseDate))
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            
+                            let category = Category.migrate(viewModel.receipt.category)
+                            Label(category.rawValue, systemImage: CategoryIconHelper.icon(for: category))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
                     Divider()
-                    Text("Varelinjer").font(.headline)
-                    ForEach(viewModel.receipt.lineItems, id: \.id) { item in
+                    
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Totalt beløp")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text(formatAmount(viewModel.receipt.totalAmount))
+                                .font(.title2.bold())
+                                .foregroundStyle(.primary)
+                        }
+                        Spacer()
+                    }
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(16)
+                
+                // Warranty info card
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text(item.descriptionText)
-                            Spacer()
-                            Text("\(item.quantity as NSDecimalNumber)x")
-                            Text(formatAmount(item.lineTotal))
+                            Image(systemName: "shield.checkerboard")
+                                .font(.title3)
+                                .foregroundStyle(Color.accentColor.opacity(0.8))
+                            Text("Reklamasjonsrett og Garanti")
+                                .font(.headline)
+                        }
+                        
+                        Divider()
+                        
+                        HStack {
+                            Image(systemName: "clock.fill")
+                                .foregroundStyle(.secondary)
+                            Text(viewModel.timeElapsedText)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        Divider()
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("I Norge gir Forbrukerkjøpsloven deg sterke rettigheter. Selv om mange produsenter (som Apple) kun oppgir 1 års garanti, har du i de fleste tilfeller 5 års reklamasjonsrett på varer som er ment å vare vesentlig lenger enn 2 år (f.eks. mobil, PC, hvitevarer). For andre varer gjelder 2 år.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            
+                            Button {
+                                showConsumerGuide = true
+                            } label: {
+                                HStack {
+                                    Text("Les mer om forbrukerrettigheter")
+                                    Image(systemName: "arrow.right.circle.fill")
+                                }
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(Color.accentColor.opacity(0.8))
+                            }
                         }
                     }
                 }
+                .groupBoxStyle(.automatic)
+
+                if !viewModel.receipt.lineItems.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Varelinjer")
+                            .font(.headline)
+                        
+                        ForEach(viewModel.receipt.lineItems.filter { item in
+                            // Filtrer ut ugyldige lineItems før visning
+                            !item.quantity.isNaN && !item.quantity.isInfinite &&
+                            !item.unitPrice.isNaN && !item.unitPrice.isInfinite &&
+                            !item.lineTotal.isNaN && !item.lineTotal.isInfinite &&
+                            item.quantity > 0 && item.unitPrice > 0 && item.lineTotal > 0
+                        }, id: \.id) { item in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(item.descriptionText)
+                                        .font(.body)
+                                    Text("\(formatQuantity(item.quantity))x")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text(formatAmount(item.lineTotal))
+                                    .font(.headline)
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+                    }
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+                }
 
                 if let note = viewModel.receipt.note, !note.isEmpty {
-                    Divider()
-                    Text("Notat")
-                        .font(.headline)
-                    Text(note)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Notat")
+                            .font(.headline)
+                        Text(note)
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
                 }
             }
             .padding()
@@ -81,6 +185,11 @@ struct ReceiptDetailView: View {
             }
             Button("Avbryt", role: .cancel) {}
         }
+        .sheet(isPresented: $showConsumerGuide) {
+            NavigationStack {
+                ConsumerGuideView()
+            }
+        }
         .onAppear {
             viewModel.attach(context: modelContext)
             viewModel.prepareShare()
@@ -88,10 +197,27 @@ struct ReceiptDetailView: View {
     }
     
     private func formatAmount(_ amount: Decimal) -> String {
-        // Sjekk for NaN og ugyldige verdier
-        if amount.isNaN || amount.isInfinite {
-            return "kr 0,00"
+        return AmountFormatter.format(amount)
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        return ReceiptDateFormatter.format(date)
+    }
+    
+    private func formatQuantity(_ quantity: Decimal) -> String {
+        // Valider quantity før formatering
+        if quantity.isNaN || quantity.isInfinite {
+            return "1"
         }
-        return "kr \(amount as NSDecimalNumber)"
+        let nsDecimal = NSDecimalNumber(decimal: quantity)
+        let doubleValue = nsDecimal.doubleValue
+        // Valider doubleValue før formatering
+        if doubleValue.isNaN || doubleValue.isInfinite {
+            return "1"
+        }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: nsDecimal) ?? "1"
     }
 }

@@ -1,0 +1,28 @@
+# Kvittering App - Cursor Rules
+
+## Arkitektur og rammeverk
+- Skriv SwiftUI (ikke UIKit) med mindre jeg ber om UIKit.
+- UIKit kan brukes i UIViewControllerRepresentable-wrappers for å integrere UIKit-komponenter i SwiftUI (f.eks. kamera, dokument-skanner, deling, meldinger).
+- Bruk MVVM-arkitektur: Views skal være tynne, logikk i ViewModels, og Services for forretningslogikk.
+- Følg eksisterende prosjektstruktur: Models/, Views/, ViewModels/, Services/, Utilities/.
+- Bruk SwiftData for datapersistens (ikke Core Data eller UserDefaults for hoveddata).
+
+## State Management
+- Bruk @StateObject for ViewModels og @EnvironmentObject for delt state (som ThemeManager).
+- Bruk @State for lokal view-state og @Binding for toveis databinding.
+
+## Kodekvalitet
+- Lag små endringer per steg; ikke gjør store refactors uten å forklare.
+- Kommentarer og variabelnavn skal være på norsk (som resten av prosjektet).
+- Skriv tester for ny funksjonalitet når det er relevant (se KvitteringTests/ for eksempler).
+
+## Kommunikasjon
+- Når du foreslår kode: si hvilke filer som skal endres, og hvorfor.
+- Alltid foreslå hvordan jeg tester endringen i Xcode etterpå.
+- Forklar endringer tydelig før du implementerer dem.
+
+## Testing
+- Når du legger til ny funksjonalitet, vurder om det trengs enhetstester.
+- Følg eksisterende testmønstre i KvitteringTests/.
+- Test i iOS Simulator først, deretter på fysisk enhet hvis relevant.
+

@@ -3,6 +3,7 @@ import SwiftData
 
 @main
 struct KvitteringApp: App {
+    @StateObject private var themeManager = ThemeManager()
     @State private var featureAccess = LocalFeatureAccess()
 
     var sharedModelContainer: ModelContainer = {
@@ -23,6 +24,9 @@ struct KvitteringApp: App {
             ContentView()
                 .modelContainer(sharedModelContainer)
                 .environment(featureAccess)
+                .environmentObject(themeManager)
+                // Bruk valgt tema for å sikre konsistent visning på simulator og fysisk enhet
+                .preferredColorScheme(themeManager.colorScheme)
         }
     }
 }

@@ -9,9 +9,6 @@ final class Receipt {
     var purchaseDate: Date
     var totalAmount: Decimal
     var category: String
-    var hasWarranty: Bool
-    var warrantyYears: Int
-    var warrantyExpiryDate: Date?
     var lineItems: [LineItem]
     var imagePath: String?
     var note: String?
@@ -27,9 +24,6 @@ final class Receipt {
         purchaseDate: Date,
         totalAmount: Decimal,
         category: String,
-        hasWarranty: Bool,
-        warrantyYears: Int,
-        warrantyExpiryDate: Date?,
         lineItems: [LineItem] = [],
         imagePath: String? = nil,
         note: String? = nil,
@@ -44,9 +38,6 @@ final class Receipt {
         self.purchaseDate = purchaseDate
         self.totalAmount = totalAmount
         self.category = category
-        self.hasWarranty = hasWarranty
-        self.warrantyYears = warrantyYears
-        self.warrantyExpiryDate = warrantyExpiryDate
         self.lineItems = lineItems
         self.imagePath = imagePath
         self.note = note
@@ -81,12 +72,26 @@ final class LineItem {
 }
 
 enum Category: String, CaseIterable, Identifiable {
-    case groceries = "Mat"
+    case groceries = "Mat og dagligvare"
     case clothes = "Klær"
     case electronics = "Elektronikk"
     case sports = "Sport"
-    case transport = "Transport"
+    case construction = "Bygg og anlegg"
     case other = "Annet"
 
     var id: String { rawValue }
+    
+    /// Migrerer gamle kategorinavn til nye
+    static func migrate(_ categoryString: String) -> Category {
+        switch categoryString {
+        case "Mat":
+            return .groceries
+        case "Elektronikk", "Elektronik":
+            return .electronics
+        case "Transport":
+            return .other
+        default:
+            return Category(rawValue: categoryString) ?? .other
+        }
+    }
 }

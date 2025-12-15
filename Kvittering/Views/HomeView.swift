@@ -11,76 +11,90 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Kvittering")
-                        .font(.largeTitle.bold())
-
                     Button {
                         showNewSheet = true
                     } label: {
-                        Label("Skann kvittering", systemImage: "doc.text.viewfinder")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.accentColor)
-                            .foregroundStyle(.white)
-                            .cornerRadius(12)
+                        HStack(spacing: 12) {
+                            Image(systemName: "doc.text.viewfinder")
+                                .font(.title3)
+                            Text("Skann kvittering")
+                                .font(.headline)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.accentColor.opacity(0.85))
+                        .foregroundStyle(.white)
+                        .cornerRadius(12)
                     }
 
                     if !viewModel.recentReceipts.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Text("Siste kvitteringer")
-                                    .font(.headline)
+                                    .font(.title3.bold())
                                 Spacer()
                                 Button {
                                     selectedTab = 1 // Switch to "Mine kvitteringer" tab
                                 } label: {
                                     Text("Se alle")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.blue)
+                                        .font(.subheadline.weight(.medium))
+                                        .foregroundStyle(.secondary)
                                 }
                             }
                             
                             ForEach(viewModel.recentReceipts) { receipt in
                                 NavigationLink(value: receipt) {
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 4) {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: CategoryIconHelper.icon(for: receipt.category))
+                                            .font(.system(size: 16))
+                                            .foregroundStyle(.secondary)
+                                            .frame(width: 32, height: 32)
+                                            .background(Color(.systemGray5))
+                                            .clipShape(Circle())
+                                        
+                                        VStack(alignment: .leading, spacing: 3) {
                                             Text(receipt.storeName)
-                                                .font(.headline)
+                                                .font(.title3.bold())
                                                 .foregroundStyle(.primary)
-                                            Text(receipt.purchaseDate, style: .date)
-                                                .font(.subheadline)
+                                            
+                                            Text(formatDate(receipt.purchaseDate))
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            
+                                            let category = Category.migrate(receipt.category)
+                                            Text(category.rawValue)
+                                                .font(.caption)
                                                 .foregroundStyle(.secondary)
                                         }
+                                        
                                         Spacer()
+                                        
                                         Text(formatAmount(receipt.totalAmount))
-                                            .font(.headline)
+                                            .font(.title3.weight(.semibold))
                                             .foregroundStyle(.primary)
                                     }
-                                    .padding()
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 12)
                                     .background(Color(.systemGray6))
-                                    .cornerRadius(8)
+                                    .cornerRadius(10)
                                 }
                             }
                         }
                     } else {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Siste kvitteringer")
-                                .font(.headline)
-                            Text("Ingen kvitteringer ennå")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                        VStack(spacing: 16) {
+                            Image(systemName: "doc.text.magnifyingglass")
+                                .font(.system(size: 60))
+                                .foregroundStyle(.secondary.opacity(0.5))
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Siste kvitteringer")
+                                    .font(.title3.bold())
+                                Text("Ingen kvitteringer ennå")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                    }
-
-                    Button {
-                        selectedTab = 1 // Switch to "Mine kvitteringer" tab
-                    } label: {
-                        Label("Mine kvitteringer", systemImage: "list.bullet")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .foregroundStyle(.primary)
-                            .cornerRadius(12)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
                     }
                 }
                 .padding()
@@ -102,10 +116,26 @@ struct HomeView: View {
     }
     
     private func formatAmount(_ amount: Decimal) -> String {
-        // Sjekk for NaN og ugyldige verdier
-        if amount.isNaN || amount.isInfinite {
-            return "kr 0,00"
-        }
-        return "kr \(amount as NSDecimalNumber)"
+        return AmountFormatter.format(amount)
     }
+    
+    private func formatDate(_ date: Date) -> String {
+        return ReceiptDateFormatter.format(date)
+    }
+}
+
+// Forhåndsvisning i lys modus
+#Preview("Lys modus") {
+    HomeView(selectedTab: .constant(0))
+        .modelContainer(for: [Receipt.self, LineItem.self], inMemory: true)
+        .environmentObject(ThemeManager())
+        .preferredColorScheme(.light)
+}
+
+// Forhåndsvisning i mørk modus
+#Preview("Mørk modus") {
+    HomeView(selectedTab: .constant(0))
+        .modelContainer(for: [Receipt.self, LineItem.self], inMemory: true)
+        .environmentObject(ThemeManager())
+        .preferredColorScheme(.dark)
 }

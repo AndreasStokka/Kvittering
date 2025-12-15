@@ -2,6 +2,20 @@ import Foundation
 import SwiftData
 import UIKit
 
+struct SearchFilters {
+    var category: Category?
+    var searchText: String = ""
+    var searchScope: SearchScope = .storeName
+    var dateRange: ClosedRange<Date>?
+    var amountRange: ClosedRange<Decimal>?
+}
+
+enum SearchScope: String, CaseIterable {
+    case storeName = "Butikknavn"
+    case lineItems = "Varelinjer"
+    case all = "Alle"
+}
+
 @MainActor
 final class ReceiptRepository {
     private let context: ModelContext
@@ -12,62 +26,232 @@ final class ReceiptRepository {
         self.imageStore = imageStore
     }
 
-    func fetchReceipts(category: Category? = nil, searchText: String = "", dateRange: ClosedRange<Date>? = nil) -> [Receipt] {
+    func fetchReceipts(filters: SearchFilters) -> [Receipt] {
+        return fetchReceipts(
+            category: filters.category,
+            searchText: filters.searchText,
+            searchScope: filters.searchScope,
+            dateRange: filters.dateRange,
+            amountRange: filters.amountRange
+        )
+    }
+    
+    func fetchReceipts(category: Category? = nil, searchText: String = "", searchScope: SearchScope = .storeName, dateRange: ClosedRange<Date>? = nil, amountRange: ClosedRange<Decimal>? = nil) -> [Receipt] {
         var descriptor = FetchDescriptor<Receipt>(sortBy: [SortDescriptor(\.purchaseDate, order: .reverse)])
 
-        // Build predicate based on what filters are provided
-        if let category {
-            let categoryValue = category.rawValue
-            if !searchText.isEmpty {
-                let searchLower = searchText.lowercased()
-                if let dateRange {
-                    let startDate = dateRange.lowerBound
-                    let endDate = dateRange.upperBound
-                    descriptor.predicate = #Predicate<Receipt> { receipt in
-                        receipt.category == categoryValue && receipt.storeName.localizedStandardContains(searchLower) && receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
-                    }
-                } else {
-                    descriptor.predicate = #Predicate<Receipt> { receipt in
-                        receipt.category == categoryValue && receipt.storeName.localizedStandardContains(searchLower)
-                    }
-                }
-            } else if let dateRange {
-                let startDate = dateRange.lowerBound
-                let endDate = dateRange.upperBound
-                descriptor.predicate = #Predicate<Receipt> { receipt in
-                    receipt.category == categoryValue && receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
-                }
-            } else {
-                descriptor.predicate = #Predicate<Receipt> { receipt in
-                    receipt.category == categoryValue
-                }
-            }
-        } else if !searchText.isEmpty {
-            let searchLower = searchText.lowercased()
-            if let dateRange {
-                let startDate = dateRange.lowerBound
-                let endDate = dateRange.upperBound
-                descriptor.predicate = #Predicate<Receipt> { receipt in
-                    receipt.storeName.localizedStandardContains(searchLower) && receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
-                }
-            } else {
-                descriptor.predicate = #Predicate<Receipt> { receipt in
-                    receipt.storeName.localizedStandardContains(searchLower)
-                }
-            }
-        } else if let dateRange {
-            let startDate = dateRange.lowerBound
-            let endDate = dateRange.upperBound
-            descriptor.predicate = #Predicate<Receipt> { receipt in
-                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
-            }
-        }
+        // Bygg predikat basert på aktive filtre
+        // SwiftData krever at alle betingelser er i #Predicate makroen, så vi må håndtere alle kombinasjoner
+        let categoryValue = category?.rawValue
+        let hasSearch = !searchText.isEmpty
+        let searchLower = searchText.lowercased()
+        let hasDateRange = dateRange != nil
+        let startDate = dateRange?.lowerBound
+        let endDate = dateRange?.upperBound
+        let hasAmountRange = amountRange != nil
+        let minAmount = amountRange?.lowerBound
+        let maxAmount = amountRange?.upperBound
+        
+        // Bygg predikat basert på hvilke filtre som er aktive
+        // Vi bruker en mer strukturert tilnærming for å redusere duplisering
+        descriptor.predicate = buildPredicate(
+            categoryValue: categoryValue,
+            hasSearch: hasSearch,
+            searchLower: searchLower,
+            hasDateRange: hasDateRange,
+            startDate: startDate,
+            endDate: endDate,
+            hasAmountRange: hasAmountRange,
+            minAmount: minAmount,
+            maxAmount: maxAmount
+        )
 
+        var results: [Receipt] = []
         do {
-            return try context.fetch(descriptor)
+            results = try context.fetch(descriptor)
         } catch {
             print("Feil ved henting av kvitteringer: \(error.localizedDescription)")
             return []
+        }
+        
+        // Bruk in-memory filtre for varelinjer-søk (SwiftData-begrensning)
+        results = applyInMemoryFilters(
+            results: results,
+            searchText: searchText,
+            searchScope: searchScope
+        )
+        
+        return results
+    }
+    
+    /// Bygger et SwiftData predikat basert på aktive filtre
+    /// - Note: SwiftData's #Predicate makro krever eksplisitte kombinasjoner, så vi må håndtere alle mulige kombinasjoner
+    private func buildPredicate(
+        categoryValue: String?,
+        hasSearch: Bool,
+        searchLower: String,
+        hasDateRange: Bool,
+        startDate: Date?,
+        endDate: Date?,
+        hasAmountRange: Bool,
+        minAmount: Decimal?,
+        maxAmount: Decimal?
+    ) -> Predicate<Receipt>? {
+        // Håndter alle mulige kombinasjoner av filtre
+        // Dette er nødvendig fordi SwiftData's #Predicate makro ikke støtter dynamisk predikat-bygging
+        
+        switch (categoryValue != nil, hasSearch, hasDateRange, hasAmountRange) {
+        case (true, true, true, true):
+            // Alle filtre
+            guard let categoryValue, let startDate, let endDate, let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.storeName.localizedStandardContains(searchLower) &&
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (true, true, true, false):
+            // Kategori + søk + dato
+            guard let categoryValue, let startDate, let endDate else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.storeName.localizedStandardContains(searchLower) &&
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+            }
+            
+        case (true, true, false, true):
+            // Kategori + søk + beløp
+            guard let categoryValue, let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.storeName.localizedStandardContains(searchLower) &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (true, false, true, true):
+            // Kategori + dato + beløp
+            guard let categoryValue, let startDate, let endDate, let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (false, true, true, true):
+            // Søk + dato + beløp
+            guard let startDate, let endDate, let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.storeName.localizedStandardContains(searchLower) &&
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (true, true, false, false):
+            // Kategori + søk
+            guard let categoryValue else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.storeName.localizedStandardContains(searchLower)
+            }
+            
+        case (true, false, true, false):
+            // Kategori + dato
+            guard let categoryValue, let startDate, let endDate else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+            }
+            
+        case (true, false, false, true):
+            // Kategori + beløp
+            guard let categoryValue, let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (false, true, true, false):
+            // Søk + dato
+            guard let startDate, let endDate else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.storeName.localizedStandardContains(searchLower) &&
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+            }
+            
+        case (false, true, false, true):
+            // Søk + beløp
+            guard let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.storeName.localizedStandardContains(searchLower) &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (false, false, true, true):
+            // Dato + beløp
+            guard let startDate, let endDate, let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate &&
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        case (true, false, false, false):
+            // Kun kategori
+            guard let categoryValue else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.category == categoryValue
+            }
+            
+        case (false, true, false, false):
+            // Kun søk
+            return #Predicate<Receipt> { receipt in
+                receipt.storeName.localizedStandardContains(searchLower)
+            }
+            
+        case (false, false, true, false):
+            // Kun dato
+            guard let startDate, let endDate else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.purchaseDate >= startDate && receipt.purchaseDate <= endDate
+            }
+            
+        case (false, false, false, true):
+            // Kun beløp
+            guard let minAmount, let maxAmount else { return nil }
+            return #Predicate<Receipt> { receipt in
+                receipt.totalAmount >= minAmount && receipt.totalAmount <= maxAmount
+            }
+            
+        default:
+            // Ingen filtre
+            return nil
+        }
+    }
+    
+    /// Bruker in-memory filtre for søk i varelinjer (SwiftData-begrensning)
+    private func applyInMemoryFilters(
+        results: [Receipt],
+        searchText: String,
+        searchScope: SearchScope
+    ) -> [Receipt] {
+        guard !searchText.isEmpty else { return results }
+        
+        switch searchScope {
+        case .lineItems:
+            return results.filter { receipt in
+                receipt.lineItems.contains { item in
+                    item.descriptionText.localizedCaseInsensitiveContains(searchText)
+                }
+            }
+        case .all:
+            return results.filter { receipt in
+                receipt.storeName.localizedCaseInsensitiveContains(searchText) ||
+                receipt.lineItems.contains { item in
+                    item.descriptionText.localizedCaseInsensitiveContains(searchText)
+                }
+            }
+        case .storeName:
+            // Dette håndteres allerede i predikatet
+            return results
         }
     }
 

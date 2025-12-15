@@ -22,38 +22,76 @@ struct EditReceiptView: View {
 
     var body: some View {
         Form {
-            Section("Butikk og dato") {
-                TextField("Butikk", text: $viewModel.storeName)
-                DatePicker("Dato", selection: $viewModel.purchaseDate, displayedComponents: .date)
+            Section {
+                HStack {
+                    Image(systemName: "storefront")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24)
+                    TextField("Butikk", text: $viewModel.storeName)
+                }
+                
+                HStack {
+                    Image(systemName: "calendar")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24)
+                    DatePicker("Dato", selection: $viewModel.purchaseDate, displayedComponents: .date)
+                }
+            } header: {
+                Text("Butikk og dato")
             }
 
-            Section("Beløp og kategori") {
-                TextField("Beløp", value: $viewModel.totalAmount, formatter: Self.norwegianNumberFormatter)
-                    .keyboardType(.decimalPad)
-                Picker("Kategori", selection: $viewModel.category) {
-                    ForEach(Category.allCases) { category in
-                        Text(category.rawValue).tag(category)
+            Section {
+                HStack {
+                    Image(systemName: "creditcard")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24)
+                    TextField("Beløp", text: Binding(
+                        get: { viewModel.totalAmountString },
+                        set: { newValue in
+                            viewModel.totalAmountString = newValue
+                            viewModel.updateAmountFromString(newValue)
+                        }
+                    ))
+                        .keyboardType(.decimalPad)
+                }
+                
+                HStack {
+                    Image(systemName: "tag")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24)
+                    Picker("Kategori", selection: $viewModel.category) {
+                        ForEach(Category.allCases) { category in
+                            HStack {
+                                Image(systemName: CategoryIconHelper.icon(for: category))
+                                Text(category.rawValue)
+                            }
+                            .tag(category)
+                        }
                     }
                 }
+            } header: {
+                Text("Beløp og kategori")
             }
 
-            Section("Garanti") {
-                Toggle("Har garanti", isOn: $viewModel.hasWarranty)
-                Stepper("Garantitid (år): \(viewModel.warrantyYears)", value: $viewModel.warrantyYears, in: 0...10)
-            }
-
-            Section("Notat") {
+            Section {
                 TextField("Notat", text: $viewModel.note, axis: .vertical)
+                    .lineLimit(3...6)
+            } header: {
+                Text("Notat")
             }
 
-            Section("Bilde") {
-                if let image = sourceImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxHeight: 200)
-                } else {
-                    Text("Ingen billede valgt")
+            if sourceImage != nil {
+                Section {
+                    if let image = sourceImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 300)
+                            .cornerRadius(12)
+                            .frame(maxWidth: .infinity)
+                    }
+                } header: {
+                    Text("Kvitteringsbilde")
                 }
             }
         }
@@ -131,4 +169,5 @@ struct EditReceiptView: View {
             }
         }
     }
+    
 }

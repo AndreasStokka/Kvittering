@@ -21,6 +21,7 @@
 		A1UTIL1 /* DocumentScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL0 /* DocumentScanner.swift */; };
 		A1UTIL10 /* TextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL11 /* TextNormalizer.swift */; };
 		A1UTIL12 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL13 /* ThemeManager.swift */; };
+		A1UTIL14 /* MessageComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL15 /* MessageComposeView.swift */; };
 		A1UTIL2 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL3 /* PhotoPicker.swift */; };
 		A1UTIL4 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL5 /* ActivityView.swift */; };
 		A1UTIL6 /* AmountsFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL7 /* AmountsFormatter.swift */; };
@@ -29,7 +30,10 @@
 		A1VIEW10 /* EditReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW11 /* EditReceiptView.swift */; };
 		A1VIEW12 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW13 /* SettingsView.swift */; };
 		A1VIEW14 /* ConsumerGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW15 /* ConsumerGuideView.swift */; };
+		A1VIEW16 /* ReceiptListFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW17 /* ReceiptListFiltersView.swift */; };
+		A1VIEW18 /* ReceiptListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW19 /* ReceiptListContent.swift */; };
 		A1VIEW2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW3 /* HomeView.swift */; };
+		A1VIEW20 /* SettingsAboutSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW21 /* SettingsAboutSection.swift */; };
 		A1VIEW4 /* NewReceiptOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW5 /* NewReceiptOptionsView.swift */; };
 		A1VIEW6 /* ReceiptListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW7 /* ReceiptListView.swift */; };
 		A1VIEW8 /* ReceiptDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW9 /* ReceiptDetailView.swift */; };
@@ -56,6 +60,7 @@
 		A1UTIL0 /* DocumentScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentScanner.swift; sourceTree = "<group>"; };
 		A1UTIL11 /* TextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextNormalizer.swift; sourceTree = "<group>"; };
 		A1UTIL13 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		A1UTIL15 /* MessageComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposeView.swift; sourceTree = "<group>"; };
 		A1UTIL3 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		A1UTIL5 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		A1UTIL7 /* AmountsFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountsFormatter.swift; sourceTree = "<group>"; };
@@ -64,6 +69,9 @@
 		A1VIEW11 /* EditReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptView.swift; sourceTree = "<group>"; };
 		A1VIEW13 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A1VIEW15 /* ConsumerGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumerGuideView.swift; sourceTree = "<group>"; };
+		A1VIEW17 /* ReceiptListFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListFiltersView.swift; sourceTree = "<group>"; };
+		A1VIEW19 /* ReceiptListContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListContent.swift; sourceTree = "<group>"; };
+		A1VIEW21 /* SettingsAboutSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAboutSection.swift; sourceTree = "<group>"; };
 		A1VIEW3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A1VIEW5 /* NewReceiptOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReceiptOptionsView.swift; sourceTree = "<group>"; };
 		A1VIEW7 /* ReceiptListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptListView.swift; sourceTree = "<group>"; };
@@ -74,7 +82,7 @@
 		A1VM7 /* ReceiptDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailViewModel.swift; sourceTree = "<group>"; };
 		A1VM9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = KvitteringTests.xctest; path = Kvittering.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		TESTPROD /* Kvittering.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Kvittering.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				PRODID /* Kvittering.app */,
-				TESTPROD /* KvitteringTests.xctest */,
+				TESTPROD /* Kvittering.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,6 +184,7 @@
 				A1UTIL9 /* CategoryIconHelper.swift */,
 				A1UTIL11 /* TextNormalizer.swift */,
 				A1UTIL13 /* ThemeManager.swift */,
+				A1UTIL15 /* MessageComposeView.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -199,9 +208,12 @@
 				A1VIEW3 /* HomeView.swift */,
 				A1VIEW5 /* NewReceiptOptionsView.swift */,
 				A1VIEW7 /* ReceiptListView.swift */,
+				A1VIEW17 /* ReceiptListFiltersView.swift */,
+				A1VIEW19 /* ReceiptListContent.swift */,
 				A1VIEW9 /* ReceiptDetailView.swift */,
 				A1VIEW11 /* EditReceiptView.swift */,
 				A1VIEW13 /* SettingsView.swift */,
+				A1VIEW21 /* SettingsAboutSection.swift */,
 				A1VIEW15 /* ConsumerGuideView.swift */,
 			);
 			path = Views;
@@ -241,7 +253,7 @@
 			);
 			name = KvitteringTests;
 			productName = KvitteringTests;
-			productReference = TESTPROD /* KvitteringTests.xctest */;
+			productReference = TESTPROD /* Kvittering.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -314,6 +326,9 @@
 				A1VIEW10 /* EditReceiptView.swift in Sources */,
 				A1VIEW12 /* SettingsView.swift in Sources */,
 				A1VIEW14 /* ConsumerGuideView.swift in Sources */,
+				A1VIEW16 /* ReceiptListFiltersView.swift in Sources */,
+				A1VIEW18 /* ReceiptListContent.swift in Sources */,
+				A1VIEW20 /* SettingsAboutSection.swift in Sources */,
 				A1UTIL1 /* DocumentScanner.swift in Sources */,
 				A1UTIL2 /* PhotoPicker.swift in Sources */,
 				A1UTIL4 /* ActivityView.swift in Sources */,
@@ -321,6 +336,7 @@
 				A1UTIL8 /* CategoryIconHelper.swift in Sources */,
 				A1UTIL10 /* TextNormalizer.swift in Sources */,
 				A1UTIL12 /* ThemeManager.swift in Sources */,
+				A1UTIL14 /* MessageComposeView.swift in Sources */,
 				A1SERV12 /* StoreNameMatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,8 +401,10 @@
 		TESTDEBUG /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEFINES_MODULE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
+				PRODUCT_MODULE_NAME = KvitteringTests;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -394,8 +412,10 @@
 		TESTRELEASE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEFINES_MODULE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
+				PRODUCT_MODULE_NAME = KvitteringTests;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

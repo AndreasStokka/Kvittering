@@ -31,7 +31,7 @@ jobs:
           xcodebuild clean test \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
             -derivedDataPath ./DerivedData \
             -enableCodeCoverage NO
@@ -42,6 +42,6 @@ jobs:
           xcodebuild analyze \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
             -derivedDataPath ./DerivedData

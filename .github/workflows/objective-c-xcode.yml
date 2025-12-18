@@ -26,15 +26,14 @@ jobs:
       - name: List available simulators
         run: xcrun simctl list devices available
       
-      - name: Build app
+      - name: Build app (generic simulator destination)
         run: |
           xcodebuild clean build \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
-            -derivedDataPath ./DerivedData \
-            -target Kvittering
+            -derivedDataPath ./DerivedData
       
       - name: Build for testing
         run: |

@@ -6,7 +6,6 @@ struct NewReceiptOptionsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var showScanner = false
-    @State private var showCameraPicker = false
     @State private var showPhotoPicker = false
     @State private var selectedImage: UIImage?
     @State private var presentEditor = false
@@ -50,24 +49,12 @@ struct NewReceiptOptionsView: View {
                     }
             }
             .sheet(isPresented: $showScanner) {
-                DocumentScanner(image: $selectedImage) { error in
-                    scannerError = "Dokument-scanner feilet: \(error.localizedDescription). Prøv vanlig kamera i stedet."
-                }
-                .onDisappear {
-                    if selectedImage != nil && !isProcessingOCR {
-                        processOCR()
+                DocumentScanner(image: $selectedImage)
+                    .onDisappear {
+                        if selectedImage != nil && !isProcessingOCR {
+                            processOCR()
+                        }
                     }
-                }
-            }
-            .sheet(isPresented: $showCameraPicker) {
-                CameraPicker(image: $selectedImage) { error in
-                    scannerError = "Kamera feilet: \(error.localizedDescription). I simulator, vennligst bruk 'Velg fra Bilder' i stedet."
-                }
-                .onDisappear {
-                    if selectedImage != nil && !isProcessingOCR {
-                        processOCR()
-                    }
-                }
             }
             .overlay {
                 if isProcessingOCR {
@@ -93,8 +80,8 @@ struct NewReceiptOptionsView: View {
                 Text(ocrError ?? "")
             }
             .alert("Kamera-feil", isPresented: Binding(get: { scannerError != nil }, set: { _ in scannerError = nil })) {
-                Button("Bruk vanlig kamera", role: .none) {
-                    showCameraPicker = true
+                Button("Bruk bildegalleri", role: .none) {
+                    showPhotoPicker = true
                 }
                 Button("Avbryt", role: .cancel) {}
             } message: {

@@ -7,24 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		65AA778A2EEF5BCB00DA42A6 /* AmountsFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA77892EEF5BBD00DA42A6 /* AmountsFormatter.swift */; };
-		65AA778C2EEF5BEC00DA42A6 /* AmountFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA778B2EEF5BE200DA42A6 /* AmountFormatterTests.swift */; };
 		A1APP1 /* KvitteringApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1APP0 /* KvitteringApp.swift */; };
 		A1MODEL1 /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1MODEL0 /* Receipt.swift */; };
-		A1RES1 /* store_categories.json in Resources */ = {isa = PBXBuildFile; fileRef = A1RES0 /* store_categories.json */; };
 		A1SERV1 /* FeatureAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV0 /* FeatureAccess.swift */; };
 		A1SERV10 /* ReceiptRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV11 /* ReceiptRepository.swift */; };
+		A1SERV12 /* StoreNameMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV13 /* StoreNameMatcher.swift */; };
 		A1SERV2 /* CategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV3 /* CategoryService.swift */; };
 		A1SERV6 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV7 /* ImageStore.swift */; };
 		A1SERV8 /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV9 /* OCRService.swift */; };
+		A1TEST1 /* OCRServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST0 /* OCRServiceTests.swift */; };
+		A1TEST3 /* AmountFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST2 /* AmountFormatterTests.swift */; };
+		A1TEST5 /* Services/CategoryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST4 /* Services/CategoryServiceTests.swift */; };
 		A1UTIL1 /* DocumentScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL0 /* DocumentScanner.swift */; };
+		A1UTIL10 /* TextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL11 /* TextNormalizer.swift */; };
+		A1UTIL12 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL13 /* ThemeManager.swift */; };
 		A1UTIL2 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL3 /* PhotoPicker.swift */; };
 		A1UTIL4 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL5 /* ActivityView.swift */; };
-		A1UTIL6 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL7 /* CameraPicker.swift */; };
-		A1UTIL8 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL9 /* ThemeManager.swift */; };
-		A1UTIL10 /* CategoryIconHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL11 /* CategoryIconHelper.swift */; };
-		A1UTIL12 /* TextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL13 /* TextNormalizer.swift */; };
-		A1SERV12 /* StoreNameMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV13 /* StoreNameMatcher.swift */; };
+		A1UTIL6 /* AmountsFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL7 /* AmountsFormatter.swift */; };
+		A1UTIL8 /* CategoryIconHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL9 /* CategoryIconHelper.swift */; };
 		A1VIEW1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW0 /* ContentView.swift */; };
 		A1VIEW10 /* EditReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW11 /* EditReceiptView.swift */; };
 		A1VIEW12 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VIEW13 /* SettingsView.swift */; };
@@ -41,25 +41,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		65AA77892EEF5BBD00DA42A6 /* AmountsFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountsFormatter.swift; sourceTree = "<group>"; };
-		65AA778B2EEF5BE200DA42A6 /* AmountFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountFormatterTests.swift; sourceTree = "<group>"; };
 		A1APP0 /* KvitteringApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KvitteringApp.swift; sourceTree = "<group>"; };
 		A1MODEL0 /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
 		A1PLIST0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1RES0 /* store_categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = store_categories.json; sourceTree = "<group>"; };
 		A1SERV0 /* FeatureAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAccess.swift; sourceTree = "<group>"; };
 		A1SERV11 /* ReceiptRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRepository.swift; sourceTree = "<group>"; };
+		A1SERV13 /* StoreNameMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameMatcher.swift; sourceTree = "<group>"; };
 		A1SERV3 /* CategoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryService.swift; sourceTree = "<group>"; };
 		A1SERV7 /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
 		A1SERV9 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
+		A1TEST0 /* OCRServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServiceTests.swift; sourceTree = "<group>"; };
+		A1TEST2 /* AmountFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountFormatterTests.swift; sourceTree = "<group>"; };
+		A1TEST4 /* Services/CategoryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/CategoryServiceTests.swift; sourceTree = "<group>"; };
 		A1UTIL0 /* DocumentScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentScanner.swift; sourceTree = "<group>"; };
+		A1UTIL11 /* TextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextNormalizer.swift; sourceTree = "<group>"; };
+		A1UTIL13 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		A1UTIL3 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		A1UTIL5 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
-		A1UTIL7 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
-		A1UTIL9 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
-		A1UTIL11 /* CategoryIconHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryIconHelper.swift; sourceTree = "<group>"; };
-		A1UTIL13 /* TextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextNormalizer.swift; sourceTree = "<group>"; };
-		A1SERV13 /* StoreNameMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameMatcher.swift; sourceTree = "<group>"; };
+		A1UTIL7 /* AmountsFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountsFormatter.swift; sourceTree = "<group>"; };
+		A1UTIL9 /* CategoryIconHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryIconHelper.swift; sourceTree = "<group>"; };
 		A1VIEW0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1VIEW11 /* EditReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditReceiptView.swift; sourceTree = "<group>"; };
 		A1VIEW13 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 		A1VM7 /* ReceiptDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailViewModel.swift; sourceTree = "<group>"; };
 		A1VM9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KvitteringTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		TESTPROD /* KvitteringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = KvitteringTests.xctest; path = Kvittering.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +105,6 @@
 				VIEWMODELS /* ViewModels */,
 				VIEWS /* Views */,
 				UTILS /* Utilities */,
-				RESOURCESGRP /* Resources */,
 			);
 			path = Kvittering;
 			sourceTree = "<group>";
@@ -113,7 +112,9 @@
 		A1TESTGRP /* KvitteringTests */ = {
 			isa = PBXGroup;
 			children = (
-				65AA778B2EEF5BE200DA42A6 /* AmountFormatterTests.swift */,
+				A1TEST0 /* OCRServiceTests.swift */,
+				A1TEST2 /* AmountFormatterTests.swift */,
+				TESTGROUPSERVICES /* Services */,
 			);
 			path = KvitteringTests;
 			sourceTree = "<group>";
@@ -133,14 +134,6 @@
 				TESTPROD /* KvitteringTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		RESOURCESGRP /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				A1RES0 /* store_categories.json */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		ROOT = {
@@ -165,17 +158,24 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		TESTGROUPSERVICES /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1TEST4 /* Services/CategoryServiceTests.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		UTILS /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				65AA77892EEF5BBD00DA42A6 /* AmountsFormatter.swift */,
 				A1UTIL0 /* DocumentScanner.swift */,
 				A1UTIL3 /* PhotoPicker.swift */,
 				A1UTIL5 /* ActivityView.swift */,
-				A1UTIL7 /* CameraPicker.swift */,
-				A1UTIL9 /* ThemeManager.swift */,
-				A1UTIL11 /* CategoryIconHelper.swift */,
-				A1UTIL13 /* TextNormalizer.swift */,
+				A1UTIL7 /* AmountsFormatter.swift */,
+				A1UTIL9 /* CategoryIconHelper.swift */,
+				A1UTIL11 /* TextNormalizer.swift */,
+				A1UTIL13 /* ThemeManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -238,7 +238,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				TESTDEP /* PBXTargetDependency */,
 			);
 			name = KvitteringTests;
 			productName = KvitteringTests;
@@ -246,24 +245,6 @@
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
-
-/* Begin PBXTargetDependency section */
-		TESTDEP /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = APPTARGET /* Kvittering */;
-			targetProxy = TESTPROXY /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXContainerItemProxy section */
-		TESTPROXY /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = PROJECT /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = APPTARGET;
-			remoteInfo = Kvittering;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXProject section */
 		PROJECT /* Project object */ = {
@@ -296,7 +277,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1RES1 /* store_categories.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,7 +294,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65AA778A2EEF5BCB00DA42A6 /* AmountsFormatter.swift in Sources */,
 				A1APP1 /* KvitteringApp.swift in Sources */,
 				A1MODEL1 /* Receipt.swift in Sources */,
 				A1SERV1 /* FeatureAccess.swift in Sources */,
@@ -338,10 +317,10 @@
 				A1UTIL1 /* DocumentScanner.swift in Sources */,
 				A1UTIL2 /* PhotoPicker.swift in Sources */,
 				A1UTIL4 /* ActivityView.swift in Sources */,
-				A1UTIL6 /* CameraPicker.swift in Sources */,
-				A1UTIL8 /* ThemeManager.swift in Sources */,
-				A1UTIL10 /* CategoryIconHelper.swift in Sources */,
-				A1UTIL12 /* TextNormalizer.swift in Sources */,
+				A1UTIL6 /* AmountsFormatter.swift in Sources */,
+				A1UTIL8 /* CategoryIconHelper.swift in Sources */,
+				A1UTIL10 /* TextNormalizer.swift in Sources */,
+				A1UTIL12 /* ThemeManager.swift in Sources */,
 				A1SERV12 /* StoreNameMatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,7 +329,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65AA778C2EEF5BEC00DA42A6 /* AmountFormatterTests.swift in Sources */,
+				A1TEST1 /* OCRServiceTests.swift in Sources */,
+				A1TEST3 /* AmountFormatterTests.swift in Sources */,
+				A1TEST5 /* Services/CategoryServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,20 +343,16 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HCUBQ28769;
-				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Kvittering/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				DEFINES_MODULE = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Andreas.Kvittering;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_NAME = Kvittering;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -388,20 +365,16 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HCUBQ28769;
-				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Kvittering/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				DEFINES_MODULE = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Andreas.Kvittering;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_NAME = Kvittering;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -412,86 +385,18 @@
 		TESTDEBUG /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEVELOPMENT_TEAM = HCUBQ28769;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(BUILT_PRODUCTS_DIR)",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				HOST_APPLICATION = "$(BUILT_PRODUCTS_DIR)/Kvittering.app";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(BUILT_PRODUCTS_DIR)",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Xlinker",
-					"-add_ast_path",
-					"-Xlinker",
-					"$(BUILT_PRODUCTS_DIR)/Kvittering.swiftmodule",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_INCLUDE_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)",
-					"$(BUILT_PRODUCTS_DIR)/Kvittering.swiftmodule",
-				);
 				SWIFT_VERSION = 5.0;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited) -I $(BUILT_PRODUCTS_DIR) -I $(BUILT_PRODUCTS_DIR)/Kvittering.swiftmodule";
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		TESTRELEASE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEVELOPMENT_TEAM = HCUBQ28769;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(BUILT_PRODUCTS_DIR)",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				HOST_APPLICATION = "$(BUILT_PRODUCTS_DIR)/Kvittering.app";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(BUILT_PRODUCTS_DIR)",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Xlinker",
-					"-add_ast_path",
-					"-Xlinker",
-					"$(BUILT_PRODUCTS_DIR)/Kvittering.swiftmodule",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_INCLUDE_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)",
-					"$(BUILT_PRODUCTS_DIR)/Kvittering.swiftmodule",
-				);
 				SWIFT_VERSION = 5.0;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited) -I $(BUILT_PRODUCTS_DIR) -I $(BUILT_PRODUCTS_DIR)/Kvittering.swiftmodule";
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

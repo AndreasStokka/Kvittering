@@ -61,8 +61,7 @@ struct HomeView: View {
                                                 .font(.caption)
                                                 .foregroundStyle(.secondary)
                                             
-                                            let category = Category.migrate(receipt.category)
-                                            Text(category.rawValue)
+                                            Text(Category.migrate(receipt.category).rawValue)
                                                 .font(.caption)
                                                 .foregroundStyle(.secondary)
                                         }

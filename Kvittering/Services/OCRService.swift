@@ -60,9 +60,12 @@ struct OCRService {
             throw OCRError.noTextFound
         }
         
-        #if DEBUG
-        NSLog("🔍 OCR Raw text:\n%@", text)
-        #endif
+        // Alltid log OCR-tekst for debugging
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print("🔍 OCR Raw text:")
+        print(text)
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        
         return text
     }
 
@@ -105,15 +108,23 @@ struct OCRService {
         
         let items = detectLineItems(in: lines, dateIndex: dateIndex, totalIndex: totalIndex, totalAmount: total)
         
-        #if DEBUG
+        // Alltid log parsed resultat for debugging
         let dateString = date != nil ? DateFormatter.localizedString(from: date!, dateStyle: .short, timeStyle: .none) : "nil"
         let totalString = total != nil ? String(describing: total!) : "nil"
-        NSLog("📊 OCR Result - Store: %@, Date: %@, Total: %@, LineItems: %d", 
-              store ?? "nil", 
-              dateString, 
-              totalString, 
-              items.count)
-        #endif
+        
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print("📊 OCR Parsed Result:")
+        print("  Store: \(store ?? "nil")")
+        print("  Date: \(dateString)")
+        print("  Total: \(totalString)")
+        print("  LineItems: \(items.count)")
+        if !items.isEmpty {
+            print("  LineItems details:")
+            for (index, item) in items.enumerated() {
+                print("    [\(index)] \(item.descriptionText) - \(item.quantity)x @ \(item.unitPrice) = \(item.lineTotal)")
+            }
+        }
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         
         return OCRResult(storeName: store, purchaseDate: date, totalAmount: total, lineItems: items, rawText: text)
     }
@@ -371,7 +382,12 @@ struct OCRService {
             "^([0-9]+[xX]?)\\s*(.+?)\\s+([0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})$"  // Quantity + product + price
         ]
         
-        for line in lines {
+        // Pattern to match just a price (for multi-line items)
+        let priceOnlyPattern = "^([0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})$"
+        
+        var index = 0
+        while index < lines.count {
+            let line = lines[index]
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             
             // Skip empty lines, headers, and summary lines
@@ -381,12 +397,16 @@ struct OCRService {
                   !trimmed.lowercased().contains("sum"),
                   !trimmed.lowercased().contains("mva"),
                   !trimmed.lowercased().contains("rabatt") else {
+                index += 1
                 continue
             }
             
             // Skip lines that are mostly numbers or special characters
             let letterCount = trimmed.filter { $0.isLetter }.count
-            guard letterCount >= 2 else { continue }
+            guard letterCount >= 2 else {
+                index += 1
+                continue
+            }
             
             var descriptionText: String?
             var quantity: Decimal = 1
@@ -451,6 +471,36 @@ struct OCRService {
                 }
             }
             
+            // Handle multi-line items (product name on one line, price on next line)
+            // Example: "Essentials 3L Shell" on one line, "2 379.15" on next line
+            if descriptionText == nil && index + 1 < lines.count {
+                let nextLine = lines[index + 1].trimmingCharacters(in: .whitespaces)
+                
+                // Check if current line looks like a product name (has letters, no price pattern)
+                let hasLetters = trimmed.filter { $0.isLetter }.count >= 3
+                let hasPricePattern = (try? NSRegularExpression(pattern: lineItemPatterns[0]))?.firstMatch(in: trimmed, range: NSRange(location: 0, length: trimmed.count)) != nil
+                
+                // Check if next line is just a price
+                if hasLetters && !hasPricePattern,
+                   let priceRegex = try? NSRegularExpression(pattern: priceOnlyPattern),
+                   let priceMatch = priceRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nextLine.count)),
+                   priceMatch.numberOfRanges >= 2 {
+                    
+                    let priceString = (nextLine as NSString).substring(with: priceMatch.range(at: 1))
+                    let normalizedPrice = priceString
+                        .replacingOccurrences(of: " ", with: "")
+                        .replacingOccurrences(of: ",", with: ".")
+                    
+                    if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                        descriptionText = trimmed
+                        unitPrice = price
+                        lineTotal = price
+                        // Skip next line since we've used it
+                        index += 1
+                    }
+                }
+            }
+            
             // Validate and add line item
             if let description = descriptionText,
                !description.isEmpty,
@@ -467,11 +517,13 @@ struct OCRService {
                 
                 // Validate against total amount if available
                 if let receiptTotal = totalAmount, total > receiptTotal {
+                    index += 1
                     continue // Skip if line total exceeds receipt total
                 }
                 
                 // Skip if price seems unrealistic (too high for a single item)
                 if let receiptTotal = totalAmount, price > receiptTotal {
+                    index += 1
                     continue
                 }
                 
@@ -486,6 +538,9 @@ struct OCRService {
                 )
                 lineItems.append(item)
             }
+            
+            // CRITICAL: Always increment index at the end of the loop
+            index += 1
         }
         
         return lineItems

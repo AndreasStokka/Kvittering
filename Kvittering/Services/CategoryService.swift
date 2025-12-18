@@ -13,10 +13,12 @@ class CategoryService {
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let stores = json["stores"] as? [String: String] else {
             // Fallback to hardcoded mappings if JSON fails to load
+            // Note: JSON file must be added to Xcode project and included in app bundle
             return [
                 "rema": .groceries,
                 "coop": .groceries,
                 "meny": .groceries,
+                "spar": .groceries,
                 "power": .electronics,
                 "elkjøp": .electronics,
                 "xxl": .sports,
@@ -121,6 +123,8 @@ class CategoryService {
             ("mat", .groceries),
             ("dagligvare", .groceries),
             ("supermarked", .groceries),
+            ("cafe", .groceries),
+            ("kafé", .groceries),
             ("elektronikk", .electronics),
             ("elektronik", .electronics),
             ("data", .electronics),

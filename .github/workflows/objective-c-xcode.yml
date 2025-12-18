@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+        
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -23,64 +23,25 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
       
-      - name: Get simulator destination
-        id: simulator
-        run: |
-          # Finn første iPhone simulator destination med både name og OS
-          DEST=$(xcodebuild -project Kvittering.xcodeproj -scheme Kvittering -showdestinations | grep "iOS Simulator" | grep "iPhone 16" | head -1)
-          if [ -z "$DEST" ]; then
-            # Fallback: bruk første iPhone simulator
-            DEST=$(xcodebuild -project Kvittering.xcodeproj -scheme Kvittering -showdestinations | grep "iOS Simulator" | grep "iPhone" | head -1)
-          fi
-          if [ -z "$DEST" ]; then
-            # Fallback: bruk første iOS Simulator
-            DEST=$(xcodebuild -project Kvittering.xcodeproj -scheme Kvittering -showdestinations | grep "iOS Simulator" | head -1)
-          fi
-          echo "Found destination: $DEST"
-          # Parse ut name og OS fra destination string
-          NAME=$(echo "$DEST" | sed -n 's/.*name=\([^,]*\).*/\1/p')
-          OS=$(echo "$DEST" | sed -n 's/.*OS=\([^,]*\).*/\1/p')
-          if [ -n "$NAME" ] && [ -n "$OS" ]; then
-            echo "dest=platform=iOS Simulator,name=$NAME,OS=$OS" >> $GITHUB_OUTPUT
-          elif [ -n "$NAME" ]; then
-            echo "dest=platform=iOS Simulator,name=$NAME" >> $GITHUB_OUTPUT
-          else
-            # Fallback til hardkodet verdi
-            echo "dest=platform=iOS Simulator,name=iPhone 16,OS=18.6" >> $GITHUB_OUTPUT
-          fi
+      - name: List available simulators
+        run: xcrun simctl list devices available
       
-      - name: Build project
+      - name: Build and test
         run: |
-          xcodebuild clean build \
+          xcodebuild clean test \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
-            -destination "${{ steps.simulator.outputs.dest }}" \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
-            -derivedDataPath ./DerivedData
-      
-      - name: Build for testing
-        run: |
-          xcodebuild build-for-testing \
-            -project Kvittering.xcodeproj \
-            -scheme Kvittering \
-            -destination "${{ steps.simulator.outputs.dest }}" \
-            CODE_SIGNING_ALLOWED=NO \
-            -derivedDataPath ./DerivedData
-      
-      - name: Run tests
-        run: |
-          xcodebuild test-without-building \
-            -project Kvittering.xcodeproj \
-            -scheme Kvittering \
-            -destination "${{ steps.simulator.outputs.dest }}" \
-            CODE_SIGNING_ALLOWED=NO \
-            -derivedDataPath ./DerivedData
+            -derivedDataPath ./DerivedData \
+            -enableCodeCoverage NO
       
       - name: Analyze project
+        continue-on-error: true
         run: |
           xcodebuild analyze \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
-            -destination "${{ steps.simulator.outputs.dest }}" \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
-            -derivedDataPath ./DerivedData || true
+            -derivedDataPath ./DerivedData

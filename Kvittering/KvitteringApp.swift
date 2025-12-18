@@ -6,18 +6,55 @@ struct KvitteringApp: App {
     @StateObject private var themeManager = ThemeManager()
     @State private var featureAccess = LocalFeatureAccess()
 
-    var sharedModelContainer: ModelContainer = {
+    var sharedModelContainer: ModelContainer {
         let schema = Schema([
             Receipt.self,
             LineItem.self
         ])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        
+        // Eksplisitt database-URL for å sikre konsistent lagring
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let databaseURL = documentsPath.appendingPathComponent("Kvittering.sqlite")
+        
+        let config = ModelConfiguration(
+            schema: schema,
+            url: databaseURL,
+            allowsSave: true,
+            cloudKitDatabase: .none
+        )
+        
         do {
+            // Prøv å opprette container med eksisterende database
             return try ModelContainer(for: schema, configurations: [config])
         } catch {
-            fatalError("Kunne ikke opprette ModelContainer: \(error.localizedDescription)")
+            // Hvis opprettelse feiler, prøv å håndtere det mer elegant
+            // Dette kan skje hvis skjemaet har endret seg betydelig
+            print("⚠️ Kunne ikke opprette ModelContainer: \(error.localizedDescription)")
+            print("⚠️ Prøver å opprette ny database...")
+            
+            // Prøv å slette den gamle databasen hvis den er korrupt
+            do {
+                try? FileManager.default.removeItem(at: databaseURL)
+                let newConfig = ModelConfiguration(
+                    schema: schema,
+                    url: databaseURL,
+                    allowsSave: true,
+                    cloudKitDatabase: .none
+                )
+                return try ModelContainer(for: schema, configurations: [newConfig])
+            } catch {
+                // Hvis alt feiler, bruk standard konfigurasjon som fallback
+                print("⚠️ Fallback til standard konfigurasjon")
+                let fallbackConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+                do {
+                    return try ModelContainer(for: schema, configurations: [fallbackConfig])
+                } catch {
+                    // Hvis også dette feiler, krasj appen (dette bør ikke skje)
+                    fatalError("Kunne ikke opprette ModelContainer: \(error.localizedDescription)")
+                }
+            }
         }
-    }()
+    }
 
     var body: some Scene {
         WindowGroup {

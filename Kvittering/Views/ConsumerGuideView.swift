@@ -4,113 +4,126 @@ struct ConsumerGuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-
-                // Garanti vs. Reklamasjonsrett
-                Section {
-                    Text("Garanti og reklamasjonsrett")
-                        .font(.title2.bold())
-
-                    Text("Det er viktig å skille mellom garanti og reklamasjonsrett, da disse gir ulike rettigheter:")
+                // Header
+                VStack(alignment: .leading, spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(.blue)
+                    Text("Forbrukerrettigheter i Norge")
+                        .font(.title)
+                        .fontWeight(.bold)
+                }
+                .padding(.bottom, 8)
+                
+                // Reklamasjonsrett
+                SectionView(
+                    title: "Reklamasjonsrett",
+                    icon: "shield.checkered",
+                    content: """
+                    I Norge gir Forbrukerkjøpsloven deg sterke rettigheter:
+                    
+                    • 5 års reklamasjonsrett på varer som er ment å vare vesentlig lenger enn 2 år (f.eks. mobil, PC, hvitevarer)
+                    • 2 års reklamasjonsrett på andre varer
+                    
+                    Dette gjelder uavhengig av hva produsenten oppgir som garanti. Selv om Apple kun oppgir 1 års garanti, har du 5 års reklamasjonsrett på iPhone og Mac.
+                    """
+                )
+                
+                // Returrett
+                SectionView(
+                    title: "Returrett",
+                    icon: "arrow.uturn.backward",
+                    content: """
+                    Returrett gjelder for kjøp gjort utenfor butikklokaler (f.eks. nettbutikker):
+                    
+                    • 14 dagers angrefrist for kjøp på nett
+                    • Du kan returnere varen uten å oppgi grunn
+                    • Varen må være i samme stand som ved levering
+                    
+                    Merk: Returrett gjelder ikke for varer som er tilpasset eller laget spesielt for deg.
+                    """
+                )
+                
+                // Bytterett
+                SectionView(
+                    title: "Bytterett",
+                    icon: "arrow.triangle.2.circlepath",
+                    content: """
+                    Mange butikker tilbyr frivillig bytterett utover det loven krever:
+                    
+                    • Butikken kan tilby kortere eller lengre byttefrist
+                    • Sjekk butikkens vilkår for bytterett
+                    • Husk å bevare kvitteringen for å benytte bytterett
+                    """
+                )
+                
+                // Garanti vs reklamasjonsrett
+                SectionView(
+                    title: "Garanti vs Reklamasjonsrett",
+                    icon: "doc.text.magnifyingglass",
+                    content: """
+                    Det er viktig å skille mellom garanti og reklamasjonsrett:
+                    
+                    • Garanti er frivillig og gis av produsenten
+                    • Reklamasjonsrett er lovfestet og kan ikke fraskrives
+                    • Du har alltid reklamasjonsrett, uavhengig av garanti
+                    • Reklamasjonsretten gjelder også brukt kjøp fra forhandler
+                    """
+                )
+                
+                // Praktiske tips
+                SectionView(
+                    title: "Praktiske tips",
+                    icon: "lightbulb.fill",
+                    content: """
+                    For å sikre dine rettigheter:
+                    
+                    • Behold alltid kvitteringen (bruk denne appen!)
+                    • Dokumenter feil og mangler med bilder
+                    • Kontakt forhandler først ved reklamasjon
+                    • Du kan kreve omlevering, prisavslag eller heving av kjøpet
+                    """
+                )
+                
+                // Footer
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Mer informasjon")
                         .font(.headline)
-                        .padding(.top, 4)
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Garanti")
-                            .font(.headline)
-                        Text("Garanti er en frivillig tilleggsytelse som selger eller produsent kan tilby. Garantien kan gi deg bedre rettigheter enn loven, men kan aldri begrense rettighetene du allerede har etter reklamasjonsreglene. Vilkår, varighet og omfang varierer.")
-                            .font(.body)
-
-                        Text("Reklamasjonsrett")
-                            .font(.headline)
-                            .padding(.top, 8)
-                        Text("Reklamasjonsrett er en lovfestet rettighet etter forbrukerkjøpsloven. Den gjelder automatisk ved kjøp fra næringsdrivende, og selger kan ikke avtale seg bort fra denne.")
-                            .font(.body)
-                    }
-                    .padding(.vertical, 8)
+                    Link("Forbrukertilsynet", destination: URL(string: "https://www.forbrukertilsynet.no")!)
+                        .font(.subheadline)
+                    Link("Forbrukerkjøpsloven", destination: URL(string: "https://lovdata.no/dokument/NL/lov/1988-05-13-27")!)
+                        .font(.subheadline)
                 }
-
-                Divider()
-
-                // Reklamasjonsrett detaljer
-                Section {
-                    Text("Reklamasjonsrett – hvor lenge gjelder den?")
-                        .font(.title2.bold())
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("2 års reklamasjonsfrist")
-                            .font(.headline)
-                        Text("For varer som er ment å vare i inntil to år, har du reklamasjonsrett i 2 år fra du mottok varen.")
-                            .font(.body)
-
-                        Text("5 års reklamasjonsfrist")
-                            .font(.headline)
-                            .padding(.top, 8)
-                        Text("For varer som er ment å vare vesentlig lengre enn to år, er reklamasjonsfristen 5 år.")
-                            .font(.body)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Eksempler kan være:")
-                            Text("• Mobiltelefoner og annet avansert elektronisk utstyr")
-                            Text("• Hvitevarer")
-                            Text("• Møbler")
-                        }
-                        .font(.body)
-                        .padding(.leading, 8)
-                        .padding(.top, 4)
-
-                        Text("Reklamasjon gjelder dersom varen har en mangel. En mangel kan være en produksjonsfeil, at varen ikke fungerer som forventet, eller at den ikke samsvarer med det som ble avtalt eller markedsført.")
-                            .font(.body)
-                            .padding(.top, 8)
-                    }
-                    .padding(.vertical, 8)
-                }
-
-                Divider()
-
-                // Retur, bytte og angrerett
-                Section {
-                    Text("Retur, bytterett og angrerett")
-                        .font(.title2.bold())
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Angrerett – 14 dager")
-                            .font(.headline)
-                        Text("Ved kjøp på nett, telefon eller andre former for fjernsalg har du som hovedregel 14 dagers angrerett. Angrefristen løper fra dagen du mottar varen. Dette gjelder ikke kjøp i fysisk butikk.")
-                            .font(.body)
-
-                        Text("Bytterett og retur i butikk")
-                            .font(.headline)
-                            .padding(.top, 8)
-                        Text("Bytterett og retur ved kjøp i fysisk butikk er ikke lovpålagt. Dersom butikken tilbyr dette, er det en frivillig ordning, og butikken bestemmer vilkårene selv.")
-                            .font(.body)
-                    }
-                    .padding(.vertical, 8)
-                }
-
-                Divider()
-
-                // Ressurser
-                Section {
-                    Text("Nyttige kilder")
-                        .font(.title2.bold())
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Link("Forbrukerrådet – dine rettigheter", destination: URL(string: "https://www.forbrukerradet.no/forside/klageguide/")!)
-                        Link("Lovdata – forbrukerkjøpsloven", destination: URL(string: "https://lovdata.no/lov/2002-06-21-34")!)
-                        Link("Forbrukertilsynet – angrerett", destination: URL(string: "https://www.forbrukertilsynet.no/vi-jobber-med/angrerett")!)
-
-                        Text("Disse kildene gir oppdatert og pålitelig informasjon om dine rettigheter som forbruker.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(.top, 8)
-                    }
-                    .padding(.vertical, 8)
-                }
+                .padding(.top, 8)
+                .foregroundStyle(.secondary)
             }
             .padding()
         }
         .navigationTitle("Forbrukerrettigheter")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct SectionView: View {
+    let title: String
+    let icon: String
+    let content: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundStyle(.blue)
+                Text(title)
+                    .font(.headline)
+            }
+            Text(content)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
     }
 }
 
@@ -119,6 +132,4 @@ struct ConsumerGuideView: View {
         ConsumerGuideView()
     }
 }
-
-
 

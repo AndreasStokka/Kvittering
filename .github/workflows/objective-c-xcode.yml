@@ -33,8 +33,7 @@ jobs:
             -scheme Kvittering \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
-            -derivedDataPath ./DerivedData \
-            -target Kvittering
+            -derivedDataPath ./DerivedData
       
       - name: Build for testing
         run: |

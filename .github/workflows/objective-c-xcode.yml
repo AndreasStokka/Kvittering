@@ -26,9 +26,28 @@ jobs:
       - name: List available simulators
         run: xcrun simctl list devices available
       
-      - name: Build and test
+      - name: Build app
         run: |
-          xcodebuild clean test \
+          xcodebuild clean build \
+            -project Kvittering.xcodeproj \
+            -scheme Kvittering \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath ./DerivedData
+      
+      - name: Build for testing
+        run: |
+          xcodebuild build-for-testing \
+            -project Kvittering.xcodeproj \
+            -scheme Kvittering \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath ./DerivedData \
+            -enableCodeCoverage NO
+      
+      - name: Run tests
+        run: |
+          xcodebuild test-without-building \
             -project Kvittering.xcodeproj \
             -scheme Kvittering \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \

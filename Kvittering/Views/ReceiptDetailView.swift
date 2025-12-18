@@ -9,6 +9,7 @@ struct ReceiptDetailView: View {
     @State private var showEdit = false
     @State private var showDeleteAlert = false
     @State private var showConsumerGuide = false
+    @State private var deleteError: String?
 
     init(receipt: Receipt) {
         _viewModel = StateObject(wrappedValue: ReceiptDetailViewModel(receipt: receipt))
@@ -107,40 +108,36 @@ struct ReceiptDetailView: View {
                 }
                 .groupBoxStyle(.automatic)
 
-                if !viewModel.receipt.lineItems.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Varelinjer")
-                            .font(.headline)
-                        
-                        ForEach(viewModel.receipt.lineItems.filter { item in
-                            // Filtrer ut ugyldige lineItems før visning
-                            !item.quantity.isNaN && !item.quantity.isInfinite &&
-                            !item.unitPrice.isNaN && !item.unitPrice.isInfinite &&
-                            !item.lineTotal.isNaN && !item.lineTotal.isInfinite &&
-                            item.quantity > 0 && item.unitPrice > 0 && item.lineTotal > 0
-                        }, id: \.id) { item in
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(item.descriptionText)
-                                        .font(.body)
-                                    Text("\(formatQuantity(item.quantity))x")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Text(formatAmount(item.lineTotal))
-                                    .font(.headline)
-                            }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 12)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                        }
-                    }
-                    .padding()
-                    .background(Color(.systemBackground))
-                    .cornerRadius(12)
-                }
+                // TEMPORARILY HIDDEN: LineItems visning skjult for debugging
+                // LineItems tolkes fortsatt i OCR og logges til konsollen, men vises ikke i UI
+                // if !viewModel.validLineItems.isEmpty {
+                //     VStack(alignment: .leading, spacing: 12) {
+                //         Text("Varelinjer")
+                //             .font(.headline)
+                //         
+                //         ForEach(viewModel.validLineItems, id: \.id) { item in
+                //             HStack {
+                //                 VStack(alignment: .leading, spacing: 4) {
+                //                     Text(item.descriptionText)
+                //                         .font(.body)
+                //                     Text("\(formatQuantity(item.quantity))x")
+                //                         .font(.caption)
+                //                         .foregroundStyle(.secondary)
+                //                 }
+                //                 Spacer()
+                //                 Text(formatAmount(item.lineTotal))
+                //                     .font(.headline)
+                //             }
+                //             .padding(.vertical, 8)
+                //             .padding(.horizontal, 12)
+                //             .background(Color(.systemGray6))
+                //             .cornerRadius(8)
+                //         }
+                //     }
+                //     .padding()
+                //     .background(Color(.systemBackground))
+                //     .cornerRadius(12)
+                // }
 
                 if let note = viewModel.receipt.note, !note.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -180,10 +177,19 @@ struct ReceiptDetailView: View {
         }
         .alert("Slett kvittering?", isPresented: $showDeleteAlert) {
             Button("Slett", role: .destructive) {
-                try? viewModel.delete()
-                dismiss()
+                do {
+                    try viewModel.delete()
+                    dismiss()
+                } catch {
+                    deleteError = error.localizedDescription
+                }
             }
             Button("Avbryt", role: .cancel) {}
+        }
+        .alert("Kunne ikke slette", isPresented: Binding(get: { deleteError != nil }, set: { _ in deleteError = nil })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(deleteError ?? "")
         }
         .sheet(isPresented: $showConsumerGuide) {
             NavigationStack {

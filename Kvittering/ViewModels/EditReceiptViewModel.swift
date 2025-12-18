@@ -169,15 +169,17 @@ final class EditReceiptViewModel: ObservableObject {
         // Normaliser butikknavn før lagring
         let normalizedStoreName = TextNormalizer.normalizeStoreName(storeName)
         
-        // Normaliser produktnavn i varelinjer
-        let normalizedLineItems = lineItems.map { item in
-            LineItem(
-                descriptionText: TextNormalizer.normalizeProductName(item.descriptionText),
-                quantity: item.quantity,
-                unitPrice: item.unitPrice,
-                lineTotal: item.lineTotal
-            )
-        }
+        // TEMPORARILY DISABLED: LineItems lagres ikke, men tolkes fortsatt i OCR for debugging
+        // LineItems tolkes og logges i OCRService, men lagres ikke i databasen
+        let normalizedLineItems: [LineItem] = []
+        // let normalizedLineItems = lineItems.map { item in
+        //     LineItem(
+        //         descriptionText: TextNormalizer.normalizeProductName(item.descriptionText),
+        //         quantity: item.quantity,
+        //         unitPrice: item.unitPrice,
+        //         lineTotal: item.lineTotal
+        //     )
+        // }
 
         if let editingReceipt {
             editingReceipt.storeName = normalizedStoreName

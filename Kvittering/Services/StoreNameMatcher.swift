@@ -33,8 +33,10 @@ class StoreNameMatcher {
     /// - Parameter text: Rå tekst fra OCR eller brukerinput
     /// - Returns: Korrigert butikknavn hvis match funnet, ellers nil
     func matchAndCorrect(_ text: String) -> String? {
-        let normalized = text.folding(options: .diacriticInsensitive, locale: .current).lowercased()
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Korriger norske bokstaver først
+        let corrected = TextNormalizer.correctNorwegianCharacters(text)
+        let normalized = corrected.folding(options: .diacriticInsensitive, locale: .current).lowercased()
+        let trimmed = corrected.trimmingCharacters(in: .whitespacesAndNewlines)
         
         // Først: Prøv eksakt match (case-insensitive, diacritic-insensitive)
         for knownStore in knownStoreNames {
@@ -81,7 +83,11 @@ class StoreNameMatcher {
             let score = calculateSimilarity(text, knownNormalized)
             
             if score > 0.7 { // Terskel for akseptabel match
-                if bestMatch == nil || score > bestMatch!.score {
+                if let currentBest = bestMatch {
+                    if score > currentBest.score {
+                        bestMatch = (knownStore, score)
+                    }
+                } else {
                     bestMatch = (knownStore, score)
                 }
             }

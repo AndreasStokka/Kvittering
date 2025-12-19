@@ -1,9 +1,11 @@
 import Foundation
 import UIKit
 import Photos
+import os.log
 
 struct ImageStore {
     private let fileManager = FileManager.default
+    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "ImageStore")
 
     func saveImage(_ image: UIImage, id: UUID) throws -> String {
         let url = try imageURL(for: id)
@@ -41,7 +43,10 @@ struct ImageStore {
     }
 
     private func directoryURL() -> URL {
-        let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            // Fallback til temp directory hvis documents directory ikke finnes
+            return fileManager.temporaryDirectory.appendingPathComponent("ReceiptImages")
+        }
         return docs.appendingPathComponent("ReceiptImages")
     }
     
@@ -52,7 +57,7 @@ struct ImageStore {
         let logURL = URL(fileURLWithPath: logPath)
         
         // #region agent log
-        print("DEBUG: saveToPhotoLibrary called")
+        Self.logger.debug("saveToPhotoLibrary called")
         let logData: [String: Any] = [
             "sessionId": "debug-session",
             "runId": "pre-fix",
@@ -61,7 +66,7 @@ struct ImageStore {
             "message": "saveToPhotoLibrary called",
             "data": [
                 "imageSize": "\(image.size.width)x\(image.size.height)",
-                "hasAlpha": image.cgImage?.alphaInfo != nil ? "\(image.cgImage!.alphaInfo.rawValue)" : "unknown"
+                "hasAlpha": (image.cgImage?.alphaInfo).map { "\($0.rawValue)" } ?? "unknown"
             ],
             "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
         ]
@@ -74,7 +79,9 @@ struct ImageStore {
             if let fileHandle = try? FileHandle(forWritingTo: logURL) {
                 defer { try? fileHandle.close() }
                 _ = try? fileHandle.seekToEnd()
-                _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
+                if let data = (jsonString + "\n").data(using: .utf8) {
+                    _ = try? fileHandle.write(contentsOf: data)
+                }
             } else {
                 // File doesn't exist, create it
                 _ = try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
@@ -96,7 +103,7 @@ struct ImageStore {
         // Vi konverterer alltid bildet for å sikre at det ikke har alpha-kanal, selv om det ser ut til å være opakt
         let alphaInfo = image.cgImage?.alphaInfo
         let alphaInfoValue = alphaInfo?.rawValue ?? 999
-        print("DEBUG: Alpha check - alphaInfo: \(alphaInfoValue)")
+        Self.logger.debug("Alpha check - alphaInfo: \(alphaInfoValue)")
         
         // #region agent log
         let alphaCheckData: [String: Any] = [
@@ -106,7 +113,7 @@ struct ImageStore {
             "location": "ImageStore.swift:95",
             "message": "Alpha channel check",
             "data": [
-                "alphaInfo": alphaInfo != nil ? "\(alphaInfo!.rawValue)" : "nil"
+                "alphaInfo": alphaInfo.map { "\($0.rawValue)" } ?? "nil"
             ],
             "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
         ]
@@ -115,7 +122,9 @@ struct ImageStore {
             if let fileHandle = try? FileHandle(forWritingTo: logURL) {
                 defer { try? fileHandle.close() }
                 _ = try? fileHandle.seekToEnd()
-                _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
+                if let data = (jsonString + "\n").data(using: .utf8) {
+                    _ = try? fileHandle.write(contentsOf: data)
+                }
             } else {
                 _ = try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
             }
@@ -131,7 +140,8 @@ struct ImageStore {
         }
         
         // #region agent log
-        print("DEBUG: Image converted to remove alpha - new alphaInfo: \(imageWithoutAlpha.cgImage?.alphaInfo.rawValue ?? 999)")
+        let newAlphaInfoValue = imageWithoutAlpha.cgImage?.alphaInfo.rawValue ?? 999
+        Self.logger.debug("Image converted to remove alpha - new alphaInfo: \(newAlphaInfoValue)")
         let conversionData: [String: Any] = [
             "sessionId": "debug-session",
             "runId": "pre-fix",
@@ -139,8 +149,8 @@ struct ImageStore {
             "location": "ImageStore.swift:125",
             "message": "Image converted to remove alpha",
             "data": [
-                "originalAlphaInfo": alphaInfo != nil ? "\(alphaInfo!.rawValue)" : "nil",
-                "newAlphaInfo": imageWithoutAlpha.cgImage?.alphaInfo != nil ? "\(imageWithoutAlpha.cgImage!.alphaInfo.rawValue)" : "unknown"
+                "originalAlphaInfo": alphaInfo.map { "\($0.rawValue)" } ?? "nil",
+                "newAlphaInfo": (imageWithoutAlpha.cgImage?.alphaInfo).map { "\($0.rawValue)" } ?? "unknown"
             ],
             "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
         ]
@@ -149,7 +159,9 @@ struct ImageStore {
             if let fileHandle = try? FileHandle(forWritingTo: logURL) {
                 defer { try? fileHandle.close() }
                 _ = try? fileHandle.seekToEnd()
-                _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
+                if let data = (jsonString + "\n").data(using: .utf8) {
+                    _ = try? fileHandle.write(contentsOf: data)
+                }
             } else {
                 _ = try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
             }
@@ -161,7 +173,7 @@ struct ImageStore {
         }
         
         // #region agent log
-        print("DEBUG: Image saved to photo library")
+        Self.logger.debug("Image saved to photo library")
         let successData: [String: Any] = [
             "sessionId": "debug-session",
             "runId": "pre-fix",
@@ -169,7 +181,7 @@ struct ImageStore {
             "location": "ImageStore.swift:147",
             "message": "Image saved to photo library",
             "data": [
-                "finalAlphaInfo": imageWithoutAlpha.cgImage?.alphaInfo != nil ? "\(imageWithoutAlpha.cgImage!.alphaInfo.rawValue)" : "unknown"
+                "finalAlphaInfo": (imageWithoutAlpha.cgImage?.alphaInfo).map { "\($0.rawValue)" } ?? "unknown"
             ],
             "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
         ]
@@ -178,7 +190,9 @@ struct ImageStore {
             if let fileHandle = try? FileHandle(forWritingTo: logURL) {
                 defer { try? fileHandle.close() }
                 _ = try? fileHandle.seekToEnd()
-                _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
+                if let data = (jsonString + "\n").data(using: .utf8) {
+                    _ = try? fileHandle.write(contentsOf: data)
+                }
             } else {
                 try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
             }

@@ -89,10 +89,14 @@ struct ConsumerGuideView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Mer informasjon")
                         .font(.headline)
-                    Link("Forbrukertilsynet", destination: URL(string: "https://www.forbrukertilsynet.no")!)
-                        .font(.subheadline)
-                    Link("Forbrukerkjøpsloven", destination: URL(string: "https://lovdata.no/dokument/NL/lov/1988-05-13-27")!)
-                        .font(.subheadline)
+                    if let forbrukertilsynetURL = URL(string: "https://www.forbrukertilsynet.no") {
+                        Link("Forbrukertilsynet", destination: forbrukertilsynetURL)
+                            .font(.subheadline)
+                    }
+                    if let lovdataURL = URL(string: "https://lovdata.no/dokument/NL/lov/1988-05-13-27") {
+                        Link("Forbrukerkjøpsloven", destination: lovdataURL)
+                            .font(.subheadline)
+                    }
                 }
                 .padding(.top, 8)
                 .foregroundStyle(.secondary)

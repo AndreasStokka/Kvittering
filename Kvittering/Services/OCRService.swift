@@ -383,6 +383,18 @@ struct OCRService {
     private func detectLineItems(in lines: [String], dateIndex: Int?, totalIndex: Int?, totalAmount: Decimal?) -> [LineItem] {
         var itemLines: [String] = []
         
+        // Log date and total indices for debugging
+        if let dateIdx = dateIndex {
+            Self.logger.debug("Date found at line \(dateIdx): '\(lines[dateIdx])'")
+        } else {
+            Self.logger.debug("Date index not found")
+        }
+        if let totalIdx = totalIndex {
+            Self.logger.debug("Total found at line \(totalIdx): '\(lines[totalIdx])'")
+        } else {
+            Self.logger.debug("Total index not found")
+        }
+        
         if let dateIdx = dateIndex, let totalIdx = totalIndex, dateIdx < totalIdx {
             // Normal case: Extract lines between date and total (exclusive of date and total lines)
             itemLines = Array(lines[(dateIdx + 1)..<totalIdx])
@@ -467,6 +479,7 @@ struct OCRService {
         ]
         
         // Pattern to match just a price (for multi-line items), med eller uten kr/NOK, støtt negative beløp
+        // Støtt også beløp med mellomrom mellom tusenvis: "2 379.15" eller "2 379,15"
         let priceOnlyPattern = "^([-]?\\s*[0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})(?:\\s*(?:kr|NOK))?$"
         
         var index = 0
@@ -596,6 +609,7 @@ struct OCRService {
                 if hasLetters && !hasPricePattern && index + 1 < normalizedLines.count {
                     let nextLine = normalizedLines[index + 1].trimmingCharacters(in: .whitespaces)
                     
+                    // Try priceOnlyPattern first (strict match)
                     if let priceRegex = try? NSRegularExpression(pattern: priceOnlyPattern),
                        let priceMatch = priceRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nextLine.count)),
                        priceMatch.numberOfRanges >= 2 {
@@ -611,6 +625,39 @@ struct OCRService {
                             lineTotal = price // Behold fortegn for lineTotal (kan være negativ for rabatter)
                             // Skip next line since we've used it
                             index += 1
+                        }
+                    } else {
+                        // Fallback: Check if next line looks like a price (contains amount pattern even if not strict match)
+                        // This handles cases like "2 379.15" where spacing might not match exactly
+                        let amountPattern = #"[-]?[0-9]{1,3}(?:[\s.][0-9]{3})*[.,][0-9]{2}"#
+                        if let amountRegex = try? NSRegularExpression(pattern: amountPattern),
+                           let amountMatch = amountRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nextLine.count)) {
+                            
+                            // Verify next line is mostly just a price (few letters, mostly numbers/spaces)
+                            let nextHasLetters: Int
+                            if let letterRegex = try? NSRegularExpression(pattern: #"\p{L}"#) {
+                                let nsNext = nextLine as NSString
+                                let letterMatches = letterRegex.matches(in: nextLine, range: NSRange(location: 0, length: nsNext.length))
+                                nextHasLetters = letterMatches.count
+                            } else {
+                                nextHasLetters = nextLine.filter { $0.isLetter }.count
+                            }
+                            
+                            // If next line has few letters (mostly just price), treat it as a price line
+                            if nextHasLetters < 3 {
+                                let priceString = (nextLine as NSString).substring(with: amountMatch.range)
+                                let normalizedPrice = priceString
+                                    .replacingOccurrences(of: " ", with: "")
+                                    .replacingOccurrences(of: ",", with: ".")
+                                
+                                if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                                    descriptionText = trimmed
+                                    unitPrice = abs(price) // Lagre absoluttverdi for unitPrice
+                                    lineTotal = price // Behold fortegn for lineTotal (kan være negativ for rabatter)
+                                    // Skip next line since we've used it
+                                    index += 1
+                                }
+                            }
                         }
                     }
                 }

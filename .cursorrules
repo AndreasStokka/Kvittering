@@ -17,9 +17,23 @@ ARCHITECTURE
   - Models: value types, Codable where appropriate.
 - Prefer dependency injection (protocols + init injection). Avoid singletons unless unavoidable.
 
+CONCURRENCY
+- Mark UI-facing types/functions with @MainActor when appropriate.
+- Do not block the main thread.
+- Use structured concurrency (Task, async let, TaskGroup) over detached tasks unless necessary.
+- Ensure cancellation is respected (check Task.isCancelled when relevant).
+
+LOGGING AND ERROR HANDLING
+- Prefer os.Logger for logging (not print) in production code.
+- Surface user-friendly errors; keep technical details in logs.
+
 CODE QUALITY RULES (MUST)
-- Do not invent APIs. If you are unsure about an Apple framework API, say so and propose a safe alternative.
-- Avoid force unwraps (!) and force try. Prefer safe handling and explicit errors.
+- If you are not 100% sure an API exists, say "I'm not sure this API exists" and propose a known-safe approach that compiles. Prefer standard Apple frameworks and patterns.
+- Never use:
+  - force unwrap (!)
+  - force try (try!)
+  - implicitly unwrapped optionals, unless required by frameworks
+  Prefer safe optional handling and explicit error paths.
 - Ensure UI updates happen on MainActor when relevant.
 - Keep changes minimal and localized; do not rename/reformat unrelated code.
 - Use consistent naming, access control, and file organization.
@@ -30,6 +44,10 @@ SWIFTUI RULES (if using SwiftUI)
 - Keep Views small; extract subviews for readability.
 - Use @State/@Binding for local state, and ObservableObject/Observation for shared state (choose one approach and be consistent).
 - Make async work explicit via Task / .task and cancel appropriately.
+- Do not put networking calls directly inside View.body.
+- Avoid doing heavy mapping/filtering inside body; precompute in ViewModel.
+- Do not create new ObservableObjects inside body; use @StateObject or inject dependencies.
+- Avoid giant views: extract subviews when a View exceeds ~150 lines.
 
 OUTPUT FORMAT (VERY IMPORTANT)
 When you respond:
@@ -38,6 +56,14 @@ When you respond:
 3) Code changes (full file content or clearly scoped snippets).
 4) Notes: build/run steps + what to verify in Xcode.
 5) If applicable: tests to add/update.
+
+DEFINITION OF DONE
+Before finalizing an answer, ensure:
+- Code compiles (no missing types/imports).
+- No force unwrap/try.
+- MainActor usage is correct for UI.
+- Error/empty/loading states exist where relevant.
+- Suggested tests or verification steps are included.
 
 QUESTIONS
 If key requirements are missing (e.g. target iOS version, architecture choice), ask at most 2 short questions OR proceed with clearly stated assumptions.

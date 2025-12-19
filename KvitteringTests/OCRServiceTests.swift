@@ -89,6 +89,7 @@ final class OCRServiceTests: XCTestCase {
         let service = OCRService()
         let result = service.parse(from: text)
         
+        XCTAssertGreaterThan(result.lineItems.count, 0, "Should parse at least 1 line item")
         XCTAssertGreaterThanOrEqual(result.lineItems.count, 2, "Should parse at least 2 multi-line items")
         
         // Første vare: Essentials 3L Shell

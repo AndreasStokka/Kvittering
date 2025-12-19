@@ -81,6 +81,16 @@ final class ReceiptDetailViewModel: ObservableObject {
         shareItems = items
     }
     
+    /// Returnerer gyldige lineItems (filtrert i init, men her for klarhet og sikkerhet)
+    var validLineItems: [LineItem] {
+        return receipt.lineItems.filter { item in
+            !item.quantity.isNaN && !item.quantity.isInfinite &&
+            !item.unitPrice.isNaN && !item.unitPrice.isInfinite &&
+            !item.lineTotal.isNaN && !item.lineTotal.isInfinite &&
+            item.quantity > 0 && item.unitPrice > 0 && item.lineTotal > 0
+        }
+    }
+    
     /// Beregner og returnerer en tekst som beskriver hvor lenge siden kvitteringen ble kjøpt
     var timeElapsedText: String {
         let calendar = Calendar.current

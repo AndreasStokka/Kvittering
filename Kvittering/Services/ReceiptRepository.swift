@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import UIKit
+import os.log
 
 struct SearchFilters {
     var category: Category?
@@ -20,6 +21,7 @@ enum SearchScope: String, CaseIterable {
 final class ReceiptRepository {
     private let context: ModelContext
     private let imageStore: ImageStore
+    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "ReceiptRepository")
 
     init(context: ModelContext, imageStore: ImageStore = ImageStore()) {
         self.context = context
@@ -69,7 +71,7 @@ final class ReceiptRepository {
         do {
             results = try context.fetch(descriptor)
         } catch {
-            print("Feil ved henting av kvitteringer: \(error.localizedDescription)")
+            Self.logger.error("Feil ved henting av kvitteringer: \(error.localizedDescription)")
             return []
         }
         
@@ -260,7 +262,7 @@ final class ReceiptRepository {
         let logPath = "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log"
         let logURL = URL(fileURLWithPath: logPath)
         let saveToPhoto = UserDefaults.standard.bool(forKey: "saveReceiptsToPhotoLibrary")
-        print("DEBUG: ReceiptRepository.add() called - hasImage: \(image != nil), saveToPhotoLibrary: \(saveToPhoto)")
+        Self.logger.debug("ReceiptRepository.add() called - hasImage: \(image != nil), saveToPhotoLibrary: \(saveToPhoto)")
         
         let repoLogData: [String: Any] = [
             "sessionId": "debug-session",
@@ -282,7 +284,9 @@ final class ReceiptRepository {
             if let fileHandle = try? FileHandle(forWritingTo: logURL) {
                 defer { try? fileHandle.close() }
                 _ = try? fileHandle.seekToEnd()
-                _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
+                if let data = (jsonString + "\n").data(using: .utf8) {
+                    _ = try? fileHandle.write(contentsOf: data)
+                }
             } else {
                 try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
             }
@@ -296,7 +300,7 @@ final class ReceiptRepository {
             // Dette gjøres asynkront og feil håndteres stille (appen skal ikke krasje hvis tilgang nektes)
             if saveToPhoto {
                 // #region agent log
-                print("DEBUG: Creating Task to save to photo library")
+                Self.logger.debug("Creating Task to save to photo library")
                 let taskLogData: [String: Any] = [
                     "sessionId": "debug-session",
                     "runId": "pre-fix",
@@ -322,7 +326,7 @@ final class ReceiptRepository {
                         try await imageStore.saveToPhotoLibrary(image)
                     } catch {
                         // Log feil, men ikke krasj appen
-                        print("DEBUG: Error saving to photo library: \(error.localizedDescription)")
+                        Self.logger.error("Error saving to photo library: \(error.localizedDescription)")
                         
                         // #region agent log
                         let errorLogData: [String: Any] = [

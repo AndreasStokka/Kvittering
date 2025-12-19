@@ -32,18 +32,27 @@ struct TextNormalizer {
     /// - Parameter text: Tekst som kan inneholde OCR-feil
     /// - Returns: Tekst med korrigerte norske bokstaver
     static func correctNorwegianCharacters(_ text: String) -> String {
-        // Vanlige OCR-feil for norske bokstaver:
-        // Æ kan bli feilgjenkjent som AE, A, eller andre tegn
-        // Ø kan bli feilgjenkjent som O, 0, eller andre tegn
-        // Å kan bli feilgjenkjent som A, AA, eller andre tegn
+        var result = text
         
-        // Korriger basert på kontekst og kjente butikknavn
-        // Dette er en enkel implementering - kan utvides med fuzzy matching
+        // Regel 1: aa → å (vanlig OCR-feil for å)
+        result = result.replacingOccurrences(of: "aa", with: "å", options: .caseInsensitive)
+        result = result.replacingOccurrences(of: "Aa", with: "Å")
+        result = result.replacingOccurrences(of: "AA", with: "Å")
         
-        // Eksempel: "Forde" i kontekst av "Sport 1" burde være "Førde"
-        // Men vi lar StoreNameMatcher håndtere dette for mer presis matching
+        // Regel 2: ae → æ (vanlig OCR-feil for æ)
+        result = result.replacingOccurrences(of: "ae", with: "æ", options: .caseInsensitive)
+        result = result.replacingOccurrences(of: "Ae", with: "Æ")
+        result = result.replacingOccurrences(of: "AE", with: "Æ")
         
-        return text
+        // Regel 3: oe → ø (vanlig OCR-feil for ø)
+        result = result.replacingOccurrences(of: "oe", with: "ø", options: .caseInsensitive)
+        result = result.replacingOccurrences(of: "Oe", with: "Ø")
+        result = result.replacingOccurrences(of: "OE", with: "Ø")
+        
+        // Regel 4 (fjernet): O/0 → ø var for aggressiv og konverterte gyldige "o" til "ø"
+        // (f.eks. "Sport" → "Spørt"). O/0 → ø er en sjelden OCR-feil i moderne OCR-systemer.
+        
+        return result
     }
     
     /// Kapitaliserer første bokstav i hvert ord
@@ -56,8 +65,10 @@ struct TextNormalizer {
             guard !word.isEmpty else { return word }
             
             // Behold spesialtegn som &, -, etc. i starten
+            guard let firstChar = word.first else {
+                return word
+            }
             var result = word
-            let firstChar = result.first!
             
             if firstChar.isLetter {
                 // Kapitaliser første bokstav

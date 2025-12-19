@@ -161,3 +161,9 @@ Etter implementering:
 - ✅ Mer konsistent data-kvalitet
 - ✅ Bedre brukeropplevelse med mindre manuell korreksjon
 
+
+
+
+
+
+

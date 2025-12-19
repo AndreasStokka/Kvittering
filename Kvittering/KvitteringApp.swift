@@ -1,10 +1,12 @@
 import SwiftUI
 import SwiftData
+import os.log
 
 @main
 struct KvitteringApp: App {
     @StateObject private var themeManager = ThemeManager()
     @State private var featureAccess = LocalFeatureAccess()
+    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "KvitteringApp")
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
@@ -13,7 +15,10 @@ struct KvitteringApp: App {
         ])
         
         // Eksplisitt database-URL for å sikre konsistent lagring
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            // Fallback til in-memory database hvis documents directory ikke finnes (skal ikke skje)
+            fatalError("Could not access documents directory")
+        }
         let databaseURL = documentsPath.appendingPathComponent("Kvittering.sqlite")
         
         let config = ModelConfiguration(
@@ -29,8 +34,8 @@ struct KvitteringApp: App {
         } catch {
             // Hvis opprettelse feiler, prøv å håndtere det mer elegant
             // Dette kan skje hvis skjemaet har endret seg betydelig
-            print("⚠️ Kunne ikke opprette ModelContainer: \(error.localizedDescription)")
-            print("⚠️ Prøver å opprette ny database...")
+            Self.logger.error("⚠️ Kunne ikke opprette ModelContainer: \(error.localizedDescription)")
+            Self.logger.info("⚠️ Prøver å opprette ny database...")
             
             // Prøv å slette den gamle databasen hvis den er korrupt
             do {
@@ -44,7 +49,7 @@ struct KvitteringApp: App {
                 return try ModelContainer(for: schema, configurations: [newConfig])
             } catch {
                 // Hvis alt feiler, bruk standard konfigurasjon som fallback
-                print("⚠️ Fallback til standard konfigurasjon")
+                Self.logger.warning("⚠️ Fallback til standard konfigurasjon")
                 let fallbackConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
                 do {
                     return try ModelContainer(for: schema, configurations: [fallbackConfig])

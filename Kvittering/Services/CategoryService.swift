@@ -65,7 +65,11 @@ class CategoryService {
             if storeName.contains(normalizedKey) || normalizedKey.contains(storeName) {
                 let score = min(Double(storeName.count) / Double(normalizedKey.count),
                                Double(normalizedKey.count) / Double(storeName.count))
-                if bestMatch == nil || score > bestMatch!.score {
+                if let currentBest = bestMatch {
+                    if score > currentBest.score {
+                        bestMatch = (category, score)
+                    }
+                } else {
                     bestMatch = (category, score)
                 }
             }
@@ -74,7 +78,11 @@ class CategoryService {
             let commonLength = longestCommonSubstring(storeName, normalizedKey).count
             if commonLength >= 3 {
                 let score = Double(commonLength) / Double(max(storeName.count, normalizedKey.count)) * 0.5
-                if bestMatch == nil || score > bestMatch!.score {
+                if let currentBest = bestMatch {
+                    if score > currentBest.score {
+                        bestMatch = (category, score)
+                    }
+                } else {
                     bestMatch = (category, score)
                 }
             }

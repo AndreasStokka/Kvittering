@@ -131,7 +131,7 @@ xcodebuild test -scheme Kvittering -destination 'platform=iOS Simulator,name=iPh
 - `CategoryServiceTests` - Kategorisering
 - `ReceiptRepositoryTests` - Datapersistens
 - `AmountFormatterTests` - Beløpsformatering
-- `LineItemsTests` - Linjepost-ekstraksjon
+- `LineItemsTests` - Linjepost-ekstraksjon (kommer i en senere versjon, men testing og justering er påbegynt for optimal funksjonalitet)
 
 ## OCR-funksjonalitet
 

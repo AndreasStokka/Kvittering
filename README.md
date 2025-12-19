@@ -1,5 +1,7 @@
 # Kvittering
 
+[![CI](https://github.com/AndreasStokka/Kvittering/actions/workflows/objective-c-xcode.yml/badge.svg)](https://github.com/AndreasStokka/Kvittering/actions/workflows/objective-c-xcode.yml)
+
 En iOS-app for å organisere og administrere kvitteringer. Appen bruker OCR (Optical Character Recognition) for å automatisk ekstraktere informasjon fra kvitteringer ved hjelp av kamera eller bilde.
 
 ## Funksjoner
@@ -61,22 +63,28 @@ Kvittering/
 │   ├── HomeViewModel.swift
 │   ├── ReceiptListViewModel.swift
 │   ├── ReceiptDetailViewModel.swift
-│   └── EditReceiptViewModel.swift
+│   ├── EditReceiptViewModel.swift
+│   └── SettingsViewModel.swift
 ├── Views/
-│   ├── ContentView.swift      # Hovednavigasjon
-│   ├── HomeView.swift         # Hjem-skjerm
-│   ├── ReceiptListView.swift # Liste over kvitteringer
-│   ├── ReceiptDetailView.swift # Detaljvisning
-│   ├── EditReceiptView.swift  # Redigering
+│   ├── ContentView.swift           # Hovednavigasjon
+│   ├── HomeView.swift              # Hjem-skjerm
+│   ├── ReceiptListView.swift       # Liste over kvitteringer
+│   ├── ReceiptListContent.swift    # Innhold i kvitteringsliste
+│   ├── ReceiptListFiltersView.swift # Filtre for kvitteringsliste
+│   ├── ReceiptDetailView.swift     # Detaljvisning
+│   ├── EditReceiptView.swift       # Redigering
 │   ├── NewReceiptOptionsView.swift # Ny kvittering
-│   ├── SettingsView.swift     # Innstillinger
-│   └── ConsumerGuideView.swift # Forbrukerrettigheter
+│   ├── SettingsView.swift          # Innstillinger
+│   ├── SettingsAboutSection.swift  # Om-seksjon i innstillinger
+│   └── ConsumerGuideView.swift     # Forbrukerrettigheter
 ├── Utilities/
-│   ├── DocumentScanner.swift  # Dokument-skanner
-│   ├── CameraPicker.swift     # Kameraintegrasjon
-│   ├── PhotoPicker.swift      # Bildegalleri
-│   ├── AmountsFormatter.swift # Beløpsformatering
-│   └── ActivityView.swift     # Deling
+│   ├── DocumentScanner.swift       # Dokument-skanner
+│   ├── PhotoPicker.swift           # Bildegalleri
+│   ├── AmountsFormatter.swift      # Beløpsformatering
+│   ├── ActivityView.swift          # Deling
+│   ├── MessageComposeView.swift    # SMS-komposisjon
+│   ├── TextNormalizer.swift        # Tekstnormalisering
+│   └── ThemeManager.swift          # Tema-håndtering
 └── Resources/
     └── store_categories.json  # Butikk-kategori mapping
 ```
@@ -85,8 +93,8 @@ Kvittering/
 
 1. Klon repositoriet:
 ```bash
-git clone https://github.com/[ditt-brukernavn]/Kvittering-1.git
-cd Kvittering-1
+git clone https://github.com/AndreasStokka/Kvittering.git
+cd Kvittering
 ```
 
 2. Åpne prosjektet i Xcode:
@@ -155,6 +163,16 @@ Appen bruker Vision Framework for on-device tekstgjenkjenning. Dette betyr:
 - **Butikknavn**: Automatisk deteksjon av kjente norske butikker
 - **Linjeposter**: Automatisk ekstraksjon av produktnavn, mengde og pris
 
+## CI/CD
+
+Prosjektet bruker GitHub Actions for kontinuerlig integrasjon:
+
+- **Build**: Automatisk bygging ved push til `main` eller pull requests
+- **Test**: Kjøring av alle enhetstester på iOS Simulator
+- **Analyze**: Statisk kodeanalyse med Xcode
+
+Workflow-filen finnes i `.github/workflows/objective-c-xcode.yml`.
+
 ## Arkitektur
 
 Appen følger MVVM-arkitektur (Model-View-ViewModel):
@@ -163,6 +181,7 @@ Appen følger MVVM-arkitektur (Model-View-ViewModel):
 - **Views**: SwiftUI-views for brukergrensesnitt
 - **ViewModels**: Forretningslogikk og state management
 - **Services**: Tjenester for OCR, kategorisering, og datalagring
+- **Utilities**: Hjelpeklasser og reusable komponenter
 
 ## Lisens
 

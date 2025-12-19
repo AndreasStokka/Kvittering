@@ -17,7 +17,7 @@
 		A1SERV8 /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1SERV9 /* OCRService.swift */; };
 		A1TEST1 /* OCRServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST0 /* OCRServiceTests.swift */; };
 		A1TEST3 /* AmountFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST2 /* AmountFormatterTests.swift */; };
-		A1TEST5 /* Services/CategoryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST4 /* Services/CategoryServiceTests.swift */; };
+		A1TEST5 /* CategoryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1TEST4 /* CategoryServiceTests.swift */; };
 		A1UTIL1 /* DocumentScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL0 /* DocumentScanner.swift */; };
 		A1UTIL10 /* TextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL11 /* TextNormalizer.swift */; };
 		A1UTIL12 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL13 /* ThemeManager.swift */; };
@@ -44,6 +44,16 @@
 		A1VM8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM9 /* SettingsViewModel.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		65E5F2D32EF4C2B1000D309F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = PROJECT /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = APPTARGET;
+			remoteInfo = Kvittering;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		A1APP0 /* KvitteringApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KvitteringApp.swift; sourceTree = "<group>"; };
 		A1MODEL0 /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
@@ -56,7 +66,7 @@
 		A1SERV9 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
 		A1TEST0 /* OCRServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServiceTests.swift; sourceTree = "<group>"; };
 		A1TEST2 /* AmountFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountFormatterTests.swift; sourceTree = "<group>"; };
-		A1TEST4 /* Services/CategoryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/CategoryServiceTests.swift; sourceTree = "<group>"; };
+		A1TEST4 /* CategoryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryServiceTests.swift; sourceTree = "<group>"; };
 		A1UTIL0 /* DocumentScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentScanner.swift; sourceTree = "<group>"; };
 		A1UTIL11 /* TextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextNormalizer.swift; sourceTree = "<group>"; };
 		A1UTIL13 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
@@ -169,7 +179,7 @@
 		TESTGROUPSERVICES /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				A1TEST4 /* Services/CategoryServiceTests.swift */,
+				A1TEST4 /* CategoryServiceTests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -250,6 +260,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				65E5F2D42EF4C2B1000D309F /* PBXTargetDependency */,
 			);
 			name = KvitteringTests;
 			productName = KvitteringTests;
@@ -265,6 +276,11 @@
 				LastSwiftUpdateCheck = 9999;
 				LastUpgradeCheck = 9999;
 				ORGANIZATIONNAME = "";
+				TargetAttributes = {
+					TESTTARGET = {
+						TestTargetID = APPTARGET;
+					};
+				};
 			};
 			buildConfigurationList = PROJCONFIGLIST /* Build configuration list for PBXProject "Kvittering" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -347,11 +363,19 @@
 			files = (
 				A1TEST1 /* OCRServiceTests.swift in Sources */,
 				A1TEST3 /* AmountFormatterTests.swift in Sources */,
-				A1TEST5 /* Services/CategoryServiceTests.swift in Sources */,
+				A1TEST5 /* CategoryServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		65E5F2D42EF4C2B1000D309F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = APPTARGET /* Kvittering */;
+			targetProxy = 65E5F2D32EF4C2B1000D309F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DEBUG /* Debug */ = {
@@ -361,11 +385,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = HCUBQ28769;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Kvittering/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_MODULE_NAME = Kvittering;
 				PRODUCT_NAME = Kvittering;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -383,11 +410,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = HCUBQ28769;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Kvittering/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.Kvittering;
+				PRODUCT_MODULE_NAME = Kvittering;
 				PRODUCT_NAME = Kvittering;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -401,22 +430,34 @@
 		TESTDEBUG /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEFINES_MODULE = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEFINES_MODULE = YES;
+				ENABLE_TESTABILITY = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
 				PRODUCT_MODULE_NAME = KvitteringTests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kvittering.app/Kvittering";
 			};
 			name = Debug;
 		};
 		TESTRELEASE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEFINES_MODULE = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEFINES_MODULE = YES;
+				ENABLE_TESTABILITY = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.KvitteringTests;
 				PRODUCT_MODULE_NAME = KvitteringTests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kvittering.app/Kvittering";
 			};
 			name = Release;
 		};

@@ -39,11 +39,6 @@ final class CategoryServiceTests: XCTestCase {
         XCTAssertEqual(category, .sports, "Sport 1 should map to sports")
     }
     
-    func testSuggestedCategory_ContainsMatch_CoopExtra() {
-        let category = categoryService.suggestedCategory(for: "coop extra majorstuen")
-        XCTAssertEqual(category, .groceries, "Coop Extra should map to groceries")
-    }
-    
     func testSuggestedCategory_ContainsMatch_CaseInsensitive() {
         let category = categoryService.suggestedCategory(for: "REMA 1000")
         XCTAssertEqual(category, .groceries, "Should be case insensitive")

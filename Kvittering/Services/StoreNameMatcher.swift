@@ -38,8 +38,13 @@ class StoreNameMatcher {
         let normalized = corrected.folding(options: .diacriticInsensitive, locale: .current).lowercased()
         let trimmed = corrected.trimmingCharacters(in: .whitespacesAndNewlines)
         
+        // Sort by length (longest first) to prioritize more specific matches
+        // e.g., "rema 1000" should be evaluated before "rema"
+        let sortedStores = knownStoreNames.sorted { $0.count > $1.count }
+        
         // Først: Prøv eksakt match (case-insensitive, diacritic-insensitive)
-        for knownStore in knownStoreNames {
+        // Use sorted stores to prioritize longer, more specific matches
+        for knownStore in sortedStores {
             let knownNormalized = knownStore.folding(options: .diacriticInsensitive, locale: .current).lowercased()
             
             if normalized == knownNormalized {
@@ -48,17 +53,28 @@ class StoreNameMatcher {
             }
         }
         
-        // Deretter: Prøv fuzzy matching
-        if let bestMatch = fuzzyMatch(text: normalized) {
+        // Deretter: Prøv fuzzy matching (also use sorted stores)
+        // But only if exact match didn't work and text is longer (to avoid false matches)
+        if normalized.count > 3, let bestMatch = fuzzyMatch(text: normalized, sortedStores: sortedStores) {
             return TextNormalizer.normalizeStoreName(bestMatch)
         }
         
-        // Sjekk om tekst inneholder et kjent butikknavn
-        for knownStore in knownStoreNames {
+        // Sjekk om tekst starter med eller inneholder et kjent butikknavn
+        // Prioritize longer matches first by using sortedStores
+        for knownStore in sortedStores {
             let knownNormalized = knownStore.folding(options: .diacriticInsensitive, locale: .current).lowercased()
             
-            // Hvis tekst inneholder kjent navn, ekstraher det
-            if normalized.contains(knownNormalized) || knownNormalized.contains(normalized) {
+            // Check if text starts with known store name (most specific match)
+            if normalized.hasPrefix(knownNormalized) {
+                // Prøv å ekstrahere butikknavnet fra linjen
+                if let extracted = extractStoreName(from: trimmed, matching: knownStore) {
+                    return TextNormalizer.normalizeStoreName(extracted)
+                }
+                return TextNormalizer.normalizeStoreName(knownStore)
+            }
+            
+            // Hvis tekst inneholder kjent navn, ekstraher det (but only if it's not just a substring)
+            if normalized.contains(knownNormalized) && normalized != knownNormalized {
                 // Prøv å ekstrahere butikknavnet fra linjen
                 if let extracted = extractStoreName(from: trimmed, matching: knownStore) {
                     return TextNormalizer.normalizeStoreName(extracted)
@@ -71,12 +87,14 @@ class StoreNameMatcher {
     }
     
     /// Fuzzy matching av butikknavn
-    /// - Parameter text: Normalisert tekst (lowercase, diacritic-insensitive)
+    /// - Parameters:
+    ///   - text: Normalisert tekst (lowercase, diacritic-insensitive)
+    ///   - sortedStores: Known store names sorted by length (longest first)
     /// - Returns: Beste match hvis score er over terskel
-    private func fuzzyMatch(text: String) -> String? {
+    private func fuzzyMatch(text: String, sortedStores: [String]) -> String? {
         var bestMatch: (name: String, score: Double)?
         
-        for knownStore in knownStoreNames {
+        for knownStore in sortedStores {
             let knownNormalized = knownStore.folding(options: .diacriticInsensitive, locale: .current).lowercased()
             
             // Beregn likhetsscore

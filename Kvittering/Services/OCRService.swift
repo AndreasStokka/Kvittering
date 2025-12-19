@@ -146,18 +146,20 @@ struct OCRService {
             }
             
             // Prøv også første ord/del av linjen (f.eks. "SPORT 1 FORDE AS" → "SPORT 1")
+            // Prioriter lengre matcher først (første to ord før første ord)
             let words = trimmed.components(separatedBy: .whitespaces)
             if words.count > 0 {
-                // Prøv første ord
-                if let matched = storeNameMatcher.matchAndCorrect(words[0]) {
-                    return matched
-                }
-                // Prøv første to ord (f.eks. "SPORT 1")
+                // Prøv første to ord først (f.eks. "REMA 1000" → "Rema 1000")
+                // Dette prioriterer lengre matcher før kortere
                 if words.count >= 2 {
                     let firstTwoWords = "\(words[0]) \(words[1])"
                     if let matched = storeNameMatcher.matchAndCorrect(firstTwoWords) {
                         return matched
                     }
+                }
+                // Prøv første ord som fallback (f.eks. "SPORT 1 FORDE AS" → "Sport")
+                if let matched = storeNameMatcher.matchAndCorrect(words[0]) {
+                    return matched
                 }
             }
         }
@@ -506,8 +508,36 @@ struct OCRService {
                 continue
             }
             
-            // Skip lines that are mostly numbers or special characters (unntatt rabattlinjer)
-            if !isDiscountLine {
+            // Declare variables before use
+            var descriptionText: String?
+            var quantity: Decimal = 1
+            var unitPrice: Decimal?
+            var lineTotal: Decimal?
+            
+            // Check if line is just a price (for discounts/rabatter without description)
+            // This handles cases like "-10,00" or "10,00" as standalone discount lines
+            let priceOnlyPattern = "^([-]?\\s*[0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})(?:\\s*(?:kr|NOK))?$"
+            if let priceRegex = try? NSRegularExpression(pattern: priceOnlyPattern) {
+                let nsTrimmed = trimmed as NSString
+                if let priceMatch = priceRegex.firstMatch(in: trimmed, range: NSRange(location: 0, length: nsTrimmed.length)),
+                   priceMatch.numberOfRanges >= 2 {
+                    // This is a price-only line - likely a discount
+                    let priceString = nsTrimmed.substring(with: priceMatch.range(at: 1))
+                    let normalizedPrice = priceString
+                        .replacingOccurrences(of: " ", with: "")
+                        .replacingOccurrences(of: ",", with: ".")
+                    
+                    if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                        // Create a line item with a generic description for discounts
+                        descriptionText = price < 0 ? "Rabatt" : "Rabatt/Justering"
+                        unitPrice = abs(price)
+                        lineTotal = price // Keep sign for discounts
+                    }
+                }
+            }
+            
+            // Skip lines that are mostly numbers or special characters (unntatt rabattlinjer og price-only lines)
+            if descriptionText == nil && !isDiscountLine {
                 // Bruk Unicode-aware check for bokstaver (\p{L})
                 let nsTrimmed = trimmed as NSString
                 if let letterRegex = try? NSRegularExpression(pattern: #"\p{L}"#) {
@@ -525,11 +555,6 @@ struct OCRService {
                     }
                 }
             }
-            
-            var descriptionText: String?
-            var quantity: Decimal = 1
-            var unitPrice: Decimal?
-            var lineTotal: Decimal?
             
             // Try pattern with quantity first (e.g., "2x Melk 25,90")
             if let regex = try? NSRegularExpression(pattern: lineItemPatterns[1]) {
@@ -610,55 +635,61 @@ struct OCRService {
                     let nextLine = normalizedLines[index + 1].trimmingCharacters(in: .whitespaces)
                     
                     // Try priceOnlyPattern first (strict match)
-                    if let priceRegex = try? NSRegularExpression(pattern: priceOnlyPattern),
-                       let priceMatch = priceRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nextLine.count)),
-                       priceMatch.numberOfRanges >= 2 {
-                        
-                        let priceString = (nextLine as NSString).substring(with: priceMatch.range(at: 1))
-                        let normalizedPrice = priceString
-                            .replacingOccurrences(of: " ", with: "")
-                            .replacingOccurrences(of: ",", with: ".")
-                        
-                        if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
-                            descriptionText = trimmed
-                            unitPrice = abs(price) // Lagre absoluttverdi for unitPrice
-                            lineTotal = price // Behold fortegn for lineTotal (kan være negativ for rabatter)
-                            // Skip next line since we've used it
-                            index += 1
-                        }
-                    } else {
-                        // Fallback: Check if next line looks like a price (contains amount pattern even if not strict match)
-                        // This handles cases like "2 379.15" where spacing might not match exactly
-                        let amountPattern = #"[-]?[0-9]{1,3}(?:[\s.][0-9]{3})*[.,][0-9]{2}"#
-                        if let amountRegex = try? NSRegularExpression(pattern: amountPattern),
-                           let amountMatch = amountRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nextLine.count)) {
+                    var matchedPrice: Decimal?
+                    if let priceRegex = try? NSRegularExpression(pattern: priceOnlyPattern) {
+                        let nsNextLine = nextLine as NSString
+                        if let priceMatch = priceRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nsNextLine.length)),
+                           priceMatch.numberOfRanges >= 2 {
+                            let priceString = nsNextLine.substring(with: priceMatch.range(at: 1))
+                            let normalizedPrice = priceString
+                                .replacingOccurrences(of: " ", with: "")
+                                .replacingOccurrences(of: ",", with: ".")
                             
-                            // Verify next line is mostly just a price (few letters, mostly numbers/spaces)
-                            let nextHasLetters: Int
-                            if let letterRegex = try? NSRegularExpression(pattern: #"\p{L}"#) {
-                                let nsNext = nextLine as NSString
-                                let letterMatches = letterRegex.matches(in: nextLine, range: NSRange(location: 0, length: nsNext.length))
-                                nextHasLetters = letterMatches.count
-                            } else {
-                                nextHasLetters = nextLine.filter { $0.isLetter }.count
+                            if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                                matchedPrice = price
                             }
-                            
-                            // If next line has few letters (mostly just price), treat it as a price line
-                            if nextHasLetters < 3 {
-                                let priceString = (nextLine as NSString).substring(with: amountMatch.range)
-                                let normalizedPrice = priceString
-                                    .replacingOccurrences(of: " ", with: "")
-                                    .replacingOccurrences(of: ",", with: ".")
+                        }
+                    }
+                    
+                    // Fallback: Check if next line looks like a price (contains amount pattern even if not strict match)
+                    // This handles cases like "12 499,00" where priceOnlyPattern might not match exactly
+                    if matchedPrice == nil {
+                        let amountPattern = #"[-]?[0-9]{1,3}(?:[\s.][0-9]{3})*[.,][0-9]{2}"#
+                        if let amountRegex = try? NSRegularExpression(pattern: amountPattern) {
+                            let nsNextLine = nextLine as NSString
+                            if let amountMatch = amountRegex.firstMatch(in: nextLine, range: NSRange(location: 0, length: nsNextLine.length)) {
+                                // Verify next line is mostly just a price (few letters, mostly numbers/spaces)
+                                let nextHasLetters: Int
+                                if let letterRegex = try? NSRegularExpression(pattern: #"\p{L}"#) {
+                                    let letterMatches = letterRegex.matches(in: nextLine, range: NSRange(location: 0, length: nsNextLine.length))
+                                    nextHasLetters = letterMatches.count
+                                } else {
+                                    nextHasLetters = nextLine.filter { $0.isLetter }.count
+                                }
                                 
-                                if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
-                                    descriptionText = trimmed
-                                    unitPrice = abs(price) // Lagre absoluttverdi for unitPrice
-                                    lineTotal = price // Behold fortegn for lineTotal (kan være negativ for rabatter)
-                                    // Skip next line since we've used it
-                                    index += 1
+                                // If next line has few letters (mostly just price), treat it as a price line
+                                if nextHasLetters < 3 {
+                                    let priceString = nsNextLine.substring(with: amountMatch.range)
+                                    let normalizedPrice = priceString
+                                        .replacingOccurrences(of: " ", with: "")
+                                        .replacingOccurrences(of: ",", with: ".")
+                                    
+                                    if let price = Decimal(string: normalizedPrice), !price.isNaN && !price.isInfinite {
+                                        matchedPrice = price
+                                    }
                                 }
                             }
                         }
+                    }
+                    
+                    // If we found a price, create line item
+                    if let price = matchedPrice {
+                        descriptionText = trimmed
+                        unitPrice = abs(price) // Lagre absoluttverdi for unitPrice
+                        lineTotal = price // Behold fortegn for lineTotal (kan være negativ for rabatter)
+                        quantity = 1 // Set quantity to 1 for multi-line items
+                        // Skip next line since we've used it
+                        index += 1
                     }
                 }
                 

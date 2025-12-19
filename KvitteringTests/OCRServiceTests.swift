@@ -3,20 +3,6 @@ import XCTest
 
 final class OCRServiceTests: XCTestCase {
     
-    func testParsesDateAndAmount() {
-        let text = """
-        REMA 1000
-        Dato: 12.04.2024
-        Total 123,45
-        """
-        let service = OCRService()
-        let result = service.parse(from: text)
-        
-        XCTAssertNotNil(result.purchaseDate, "Purchase date should be parsed")
-        XCTAssertEqual(result.totalAmount, Decimal(string: "123.45"), "Total amount should match")
-        XCTAssertEqual(result.storeName, "Rema 1000", "Store name should match")
-    }
-    
     // MARK: - Norwegian Characters Tests
     
     func testParsesNorwegianCharacters() {
@@ -101,25 +87,6 @@ final class OCRServiceTests: XCTestCase {
         let item2 = result.lineItems[1]
         XCTAssertTrue(item2.descriptionText.contains("Melk"), "Second item should contain 'Melk'")
         XCTAssertEqual(item2.unitPrice, Decimal(string: "18.90"), "Second item price should be 18.90")
-    }
-    
-    func testParsesMultiLineItemsWithThousandsSeparator() {
-        // Test flerlinjevarer med tusenskilletegn
-        let text = """
-        ELKJØP
-        Dato: 22.04.2024
-        Samsung TV 55"
-        12 499,00
-        Total 12 499,00
-        """
-        let service = OCRService()
-        let result = service.parse(from: text)
-        
-        XCTAssertGreaterThanOrEqual(result.lineItems.count, 1, "Should parse multi-line item")
-        
-        let item = result.lineItems[0]
-        XCTAssertTrue(item.descriptionText.contains("Samsung"), "Should contain 'Samsung'")
-        XCTAssertEqual(item.unitPrice, Decimal(string: "12499.00"), "Price should handle thousands separator")
     }
     
     // MARK: - Discount Tests

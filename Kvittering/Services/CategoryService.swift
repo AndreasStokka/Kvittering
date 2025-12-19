@@ -16,6 +16,7 @@ class CategoryService {
             // Note: JSON file must be added to Xcode project and included in app bundle
             return [
                 "rema": .groceries,
+                "rema 1000": .groceries,
                 "coop": .groceries,
                 "meny": .groceries,
                 "spar": .groceries,
@@ -39,6 +40,11 @@ class CategoryService {
     }
     
     func suggestedCategory(for storeName: String) -> Category {
+        // Early return for empty strings
+        guard !storeName.isEmpty else {
+            return .other
+        }
+        
         let normalized = storeName.folding(options: .diacriticInsensitive, locale: .current).lowercased()
         
         // Try exact match first
@@ -51,9 +57,19 @@ class CategoryService {
     }
     
     private func fuzzyMatch(storeName: String) -> (category: Category, score: Double)? {
+        // Early return for empty strings
+        guard !storeName.isEmpty else {
+            return nil
+        }
+        
         var bestMatch: (category: Category, score: Double)?
         
-        for (key, category) in mapping {
+        // Sort keys by length (longest first) to prioritize more specific matches
+        // e.g., "coop extra" should be evaluated before "coop"
+        let sortedKeys = mapping.keys.sorted { $0.count > $1.count }
+        
+        for key in sortedKeys {
+            guard let category = mapping[key] else { continue }
             let normalizedKey = key.folding(options: .diacriticInsensitive, locale: .current).lowercased()
             
             // Exact match gets highest score
@@ -62,7 +78,7 @@ class CategoryService {
             }
             
             // Contains match gets medium score
-            if storeName.contains(normalizedKey) || normalizedKey.contains(storeName) {
+            if storeName.contains(normalizedKey) {
                 let score = min(Double(storeName.count) / Double(normalizedKey.count),
                                Double(normalizedKey.count) / Double(storeName.count))
                 if let currentBest = bestMatch {
@@ -72,9 +88,12 @@ class CategoryService {
                 } else {
                     bestMatch = (category, score)
                 }
+                // Skip longestCommonSubstring for contains matches - they're already handled
+                continue
             }
             
-            // Partial match (common substring) gets lower score
+            // Only check longestCommonSubstring if we haven't found a contains match yet
+            // This prevents shorter keys from overriding longer contains matches
             let commonLength = longestCommonSubstring(storeName, normalizedKey).count
             if commonLength >= 3 {
                 let score = Double(commonLength) / Double(max(storeName.count, normalizedKey.count)) * 0.5

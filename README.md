@@ -89,21 +89,6 @@ Kvittering/
     └── store_categories.json  # Butikk-kategori mapping
 ```
 
-## Installasjon
-
-1. Klon repositoriet:
-```bash
-git clone https://github.com/AndreasStokka/Kvittering.git
-cd Kvittering
-```
-
-2. Åpne prosjektet i Xcode:
-```bash
-open Kvittering.xcodeproj
-```
-
-3. Bygg og kjør prosjektet (⌘R)
-
 ## Bruk
 
 ### Legge til en ny kvittering
@@ -167,11 +152,13 @@ Appen bruker Vision Framework for on-device tekstgjenkjenning. Dette betyr:
 
 Prosjektet bruker GitHub Actions for kontinuerlig integrasjon:
 
-- **Build**: Automatisk bygging ved push til `main` eller pull requests
-- **Test**: Kjøring av alle enhetstester på iOS Simulator
-- **Analyze**: Statisk kodeanalyse med Xcode
+- ✅ **Build**: Automatisk bygging ved push til `main` eller pull requests
+- ✅ **Test**: Kjøring av alle enhetstester på iOS Simulator - alle tester går gjennom
+- ✅ **Analyze**: Statisk kodeanalyse med Xcode
 
 Workflow-filen finnes i `.github/workflows/objective-c-xcode.yml`.
+
+Se CI-status i badge øverst i README.
 
 ## Arkitektur
 

@@ -108,8 +108,9 @@ struct ReceiptDetailView: View {
                 }
                 .groupBoxStyle(.automatic)
 
-                // TEMPORARILY HIDDEN: LineItems visning skjult for debugging
+                // TODO: Enable in v1.1 - LineItems UI deaktivert i v1.0
                 // LineItems tolkes fortsatt i OCR og logges til konsollen, men vises ikke i UI
+                // Bakgrunnslogikken i OCRService og Receipt-modellen er intakt for fremtidig bruk
                 // if !viewModel.validLineItems.isEmpty {
                 //     VStack(alignment: .leading, spacing: 12) {
                 //         Text("Varelinjer")

@@ -169,8 +169,9 @@ final class EditReceiptViewModel: ObservableObject {
         // Normaliser butikknavn før lagring
         let normalizedStoreName = TextNormalizer.normalizeStoreName(storeName)
         
-        // TEMPORARILY DISABLED: LineItems lagres ikke, men tolkes fortsatt i OCR for debugging
-        // LineItems tolkes og logges i OCRService, men lagres ikke i databasen
+        // TODO: Enable in v1.1 - LineItems lagring deaktivert i v1.0
+        // LineItems tolkes fortsatt i OCR for debugging og logges til konsollen
+        // Aktiver denne koden når OCR-kvaliteten er god nok for produksjon
         let normalizedLineItems: [LineItem] = []
         // let normalizedLineItems = lineItems.map { item in
         //     LineItem(

@@ -8,6 +8,7 @@ struct NewReceiptOptionsView: View {
     @State private var showScanner = false
     @State private var showPhotoPicker = false
     @State private var selectedImage: UIImage?
+    @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var presentEditor = false
     @State private var isProcessingOCR = false
     @State private var ocrResult: OCRResult?
@@ -40,13 +41,22 @@ struct NewReceiptOptionsView: View {
                     .modelContext(modelContext)
                 }
             }
-            .sheet(isPresented: $showPhotoPicker) {
-                PhotoPicker(image: $selectedImage)
-                    .onDisappear {
-                        if selectedImage != nil && !isProcessingOCR {
-                            processOCR()
+            .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
+            .onChange(of: selectedPhotoItem) { _, newItem in
+                guard let newItem else { return }
+                Task {
+                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        let resized = downsampleImage(uiImage, maxDimension: 2048)
+                        await MainActor.run {
+                            selectedImage = resized
+                            selectedPhotoItem = nil  // Reset for next selection
+                            if !isProcessingOCR {
+                                processOCR()
+                            }
                         }
                     }
+                }
             }
             .sheet(isPresented: $showScanner) {
                 DocumentScanner(image: $selectedImage)
@@ -128,6 +138,21 @@ struct NewReceiptOptionsView: View {
                     isProcessingOCR = false
                 }
             }
+        }
+    }
+    
+    /// Nedskalerer bildet hvis det overskrider maxDimension
+    private func downsampleImage(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
+        let size = image.size
+        let maxSide = max(size.width, size.height)
+        guard maxSide > maxDimension else { return image }
+        
+        let scale = maxDimension / maxSide
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
         }
     }
 }

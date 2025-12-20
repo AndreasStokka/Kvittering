@@ -258,40 +258,8 @@ final class ReceiptRepository {
     }
 
     func add(receipt: Receipt, image: UIImage?) throws {
-        // #region agent log
-        let logPath = "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log"
-        let logURL = URL(fileURLWithPath: logPath)
         let saveToPhoto = UserDefaults.standard.bool(forKey: "saveReceiptsToPhotoLibrary")
         Self.logger.debug("ReceiptRepository.add() called - hasImage: \(image != nil), saveToPhotoLibrary: \(saveToPhoto)")
-        
-        let repoLogData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "pre-fix",
-            "hypothesisId": "H0",
-            "location": "ReceiptRepository.swift:258",
-            "message": "add() called",
-            "data": [
-                "hasImage": image != nil,
-                "saveToPhotoLibrary": saveToPhoto
-            ],
-            "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: repoLogData), let jsonString = String(data: jsonData, encoding: .utf8) {
-            // Ensure directory exists
-            let logDir = logURL.deletingLastPathComponent()
-            try? FileManager.default.createDirectory(at: logDir, withIntermediateDirectories: true)
-            
-            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                defer { try? fileHandle.close() }
-                _ = try? fileHandle.seekToEnd()
-                if let data = (jsonString + "\n").data(using: .utf8) {
-                    _ = try? fileHandle.write(contentsOf: data)
-                }
-            } else {
-                try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
         
         if let image, let storedPath = try? imageStore.saveImage(image, id: receipt.id) {
             receipt.imagePath = storedPath
@@ -299,27 +267,7 @@ final class ReceiptRepository {
             // Lagre til fotobibliotek hvis innstillingen er aktivert
             // Dette gjøres asynkront og feil håndteres stille (appen skal ikke krasje hvis tilgang nektes)
             if saveToPhoto {
-                // #region agent log
                 Self.logger.debug("Creating Task to save to photo library")
-                let taskLogData: [String: Any] = [
-                    "sessionId": "debug-session",
-                    "runId": "pre-fix",
-                    "hypothesisId": "H0",
-                    "location": "ReceiptRepository.swift:275",
-                    "message": "Creating Task to save to photo library",
-                    "data": [:],
-                    "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-                ]
-                if let jsonData = try? JSONSerialization.data(withJSONObject: taskLogData), let jsonString = String(data: jsonData, encoding: .utf8) {
-                    if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                        defer { try? fileHandle.close() }
-                        _ = try? fileHandle.seekToEnd()
-                        _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
-                    } else {
-                        try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-                    }
-                }
-                // #endregion
                 
                 Task {
                     do {
@@ -327,27 +275,6 @@ final class ReceiptRepository {
                     } catch {
                         // Log feil, men ikke krasj appen
                         Self.logger.error("Error saving to photo library: \(error.localizedDescription)")
-                        
-                        // #region agent log
-                        let errorLogData: [String: Any] = [
-                            "sessionId": "debug-session",
-                            "runId": "pre-fix",
-                            "hypothesisId": "H0",
-                            "location": "ReceiptRepository.swift:290",
-                            "message": "Error saving to photo library",
-                            "data": ["error": error.localizedDescription],
-                            "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-                        ]
-                        if let jsonData = try? JSONSerialization.data(withJSONObject: errorLogData), let jsonString = String(data: jsonData, encoding: .utf8) {
-                            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                                defer { try? fileHandle.close() }
-                                _ = try? fileHandle.seekToEnd()
-                                _ = try? fileHandle.write(contentsOf: (jsonString + "\n").data(using: .utf8)!)
-                            } else {
-                                try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-                            }
-                        }
-                        // #endregion
                     }
                 }
             }

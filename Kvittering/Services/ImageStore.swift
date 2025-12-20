@@ -53,41 +53,7 @@ struct ImageStore {
     /// Lagrer bilde til fotobiblioteket
     /// - Parameter image: Bildet som skal lagres
     func saveToPhotoLibrary(_ image: UIImage) async throws {
-        let logPath = "/Users/andre/Documents/GitHub/Kvittering-1/.cursor/debug.log"
-        let logURL = URL(fileURLWithPath: logPath)
-        
-        // #region agent log
         Self.logger.debug("saveToPhotoLibrary called")
-        let logData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "pre-fix",
-            "hypothesisId": "H1",
-            "location": "ImageStore.swift:50",
-            "message": "saveToPhotoLibrary called",
-            "data": [
-                "imageSize": "\(image.size.width)x\(image.size.height)",
-                "hasAlpha": (image.cgImage?.alphaInfo).map { "\($0.rawValue)" } ?? "unknown"
-            ],
-            "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: logData), let jsonString = String(data: jsonData, encoding: .utf8) {
-            // Ensure directory exists
-            let logDir = logURL.deletingLastPathComponent()
-            _ = try? fileManager.createDirectory(at: logDir, withIntermediateDirectories: true)
-            
-            // Append to file
-            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                defer { try? fileHandle.close() }
-                _ = try? fileHandle.seekToEnd()
-                if let data = (jsonString + "\n").data(using: .utf8) {
-                    _ = try? fileHandle.write(contentsOf: data)
-                }
-            } else {
-                // File doesn't exist, create it
-                _ = try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
         
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         
@@ -101,35 +67,8 @@ struct ImageStore {
         
         // Konverter bildet til et format uten alpha-kanal for å unngå unødvendig filstørrelse
         // Vi konverterer alltid bildet for å sikre at det ikke har alpha-kanal, selv om det ser ut til å være opakt
-        let alphaInfo = image.cgImage?.alphaInfo
-        let alphaInfoValue = alphaInfo?.rawValue ?? 999
+        let alphaInfoValue = image.cgImage?.alphaInfo.rawValue ?? 999
         Self.logger.debug("Alpha check - alphaInfo: \(alphaInfoValue)")
-        
-        // #region agent log
-        let alphaCheckData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "pre-fix",
-            "hypothesisId": "H2",
-            "location": "ImageStore.swift:95",
-            "message": "Alpha channel check",
-            "data": [
-                "alphaInfo": alphaInfo.map { "\($0.rawValue)" } ?? "nil"
-            ],
-            "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: alphaCheckData), let jsonString = String(data: jsonData, encoding: .utf8) {
-            let logURL = URL(fileURLWithPath: logPath)
-            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                defer { try? fileHandle.close() }
-                _ = try? fileHandle.seekToEnd()
-                if let data = (jsonString + "\n").data(using: .utf8) {
-                    _ = try? fileHandle.write(contentsOf: data)
-                }
-            } else {
-                _ = try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
         
         // Alltid konverter bildet til RGB uten alpha-kanal for å unngå Photos framework-advarsel
         // Dette sikrer at bildet lagres uten alpha-kanal uavhengig av originalformat
@@ -139,64 +78,13 @@ struct ImageStore {
             image.draw(in: CGRect(origin: .zero, size: size))
         }
         
-        // #region agent log
         let newAlphaInfoValue = imageWithoutAlpha.cgImage?.alphaInfo.rawValue ?? 999
         Self.logger.debug("Image converted to remove alpha - new alphaInfo: \(newAlphaInfoValue)")
-        let conversionData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "pre-fix",
-            "hypothesisId": "H3",
-            "location": "ImageStore.swift:125",
-            "message": "Image converted to remove alpha",
-            "data": [
-                "originalAlphaInfo": alphaInfo.map { "\($0.rawValue)" } ?? "nil",
-                "newAlphaInfo": (imageWithoutAlpha.cgImage?.alphaInfo).map { "\($0.rawValue)" } ?? "unknown"
-            ],
-            "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: conversionData), let jsonString = String(data: jsonData, encoding: .utf8) {
-            let logURL = URL(fileURLWithPath: logPath)
-            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                defer { try? fileHandle.close() }
-                _ = try? fileHandle.seekToEnd()
-                if let data = (jsonString + "\n").data(using: .utf8) {
-                    _ = try? fileHandle.write(contentsOf: data)
-                }
-            } else {
-                _ = try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
         
         try await PHPhotoLibrary.shared().performChanges {
             PHAssetChangeRequest.creationRequestForAsset(from: imageWithoutAlpha)
         }
         
-        // #region agent log
         Self.logger.debug("Image saved to photo library")
-        let successData: [String: Any] = [
-            "sessionId": "debug-session",
-            "runId": "pre-fix",
-            "hypothesisId": "H3",
-            "location": "ImageStore.swift:147",
-            "message": "Image saved to photo library",
-            "data": [
-                "finalAlphaInfo": (imageWithoutAlpha.cgImage?.alphaInfo).map { "\($0.rawValue)" } ?? "unknown"
-            ],
-            "timestamp": Int64(Date().timeIntervalSince1970 * 1000)
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: successData), let jsonString = String(data: jsonData, encoding: .utf8) {
-            let logURL = URL(fileURLWithPath: logPath)
-            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                defer { try? fileHandle.close() }
-                _ = try? fileHandle.seekToEnd()
-                if let data = (jsonString + "\n").data(using: .utf8) {
-                    _ = try? fileHandle.write(contentsOf: data)
-                }
-            } else {
-                try? (jsonString + "\n").write(to: logURL, atomically: true, encoding: .utf8)
-            }
-        }
-        // #endregion
     }
 }

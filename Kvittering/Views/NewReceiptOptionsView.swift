@@ -26,9 +26,9 @@ struct NewReceiptOptionsView: View {
                     scannerError = "Dokument-scanner fungerer ikke pålitelig i simulator. Vennligst bruk 'Velg fra Bilder' for å teste med eksisterende bilder."
                 }
                 #else
-                Button("Skann med kamera") { showScanner = true }
+                Button("Skann med kamera (anbefalt)") { showScanner = true }
                 #endif
-                Button("Velg fra Bilder") { showPhotoPicker = true }
+                Button("Velg fra bilder") { showPhotoPicker = true }
             }
             .navigationTitle("Ny kvittering")
             .sheet(isPresented: $presentEditor) {

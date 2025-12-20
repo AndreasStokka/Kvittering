@@ -77,7 +77,7 @@ struct OCRService {
         
         // Log OCR-tekst kun i debug-bygg (kan inneholde sensitiv data)
         #if DEBUG
-        Self.logger.debug("OCR Raw text:\n\(text)")
+        print("🔍 OCR Raw text:\n\(text)")
         #endif
         
         return text
@@ -127,12 +127,12 @@ struct OCRService {
         let dateString = date.map { DateFormatter.localizedString(from: $0, dateStyle: .short, timeStyle: .none) } ?? "nil"
         let totalString = total.map { String(describing: $0) } ?? "nil"
         
-        var logMessage = "OCR Parsed Result - Store: \(store ?? "nil"), Date: \(dateString), Total: \(totalString), LineItems: \(items.count)"
+        var logMessage = "📋 OCR Parsed Result - Store: \(store ?? "nil"), Date: \(dateString), Total: \(totalString), LineItems: \(items.count)"
         if !items.isEmpty {
-            let itemsDetails = items.enumerated().map { "[\($0.offset)] \($0.element.descriptionText)" }.joined(separator: "\n")
-            logMessage += "\nLineItems details:\n\(itemsDetails)"
+            let itemsDetails = items.enumerated().map { "  [\($0.offset)] \($0.element.descriptionText) — \($0.element.unitPrice) × \($0.element.quantity) = \($0.element.lineTotal)" }.joined(separator: "\n")
+            logMessage += "\n📦 LineItems details:\n\(itemsDetails)"
         }
-        Self.logger.debug("\(logMessage)")
+        print(logMessage)
         #endif
         
         return OCRResult(storeName: store, purchaseDate: date, totalAmount: total, lineItems: items, rawText: text)
@@ -392,14 +392,14 @@ struct OCRService {
         // Log date and total indices kun i debug-bygg (kan inneholde kvitteringsdata)
         #if DEBUG
         if let dateIdx = dateIndex {
-            Self.logger.debug("Date found at line \(dateIdx): '\(lines[dateIdx])'")
+            print("📅 Date found at line \(dateIdx): '\(lines[dateIdx])'")
         } else {
-            Self.logger.debug("Date index not found")
+            print("📅 Date index not found")
         }
         if let totalIdx = totalIndex {
-            Self.logger.debug("Total found at line \(totalIdx): '\(lines[totalIdx])'")
+            print("💰 Total found at line \(totalIdx): '\(lines[totalIdx])'")
         } else {
-            Self.logger.debug("Total index not found")
+            print("💰 Total index not found")
         }
         #endif
         
@@ -407,7 +407,7 @@ struct OCRService {
             // Normal case: Extract lines between date and total (exclusive of date and total lines)
             itemLines = Array(lines[(dateIdx + 1)..<totalIdx])
             #if DEBUG
-            Self.logger.debug("Line items region: lines \(dateIdx + 1) to \(totalIdx - 1) (between date and total)")
+            print("📍 Line items region: lines \(dateIdx + 1) to \(totalIdx - 1) (between date and total)")
             #endif
         } else if let totalIdx = totalIndex, totalIdx > 0 {
             // Fallback 1: dateIndex missing, use all lines before total
@@ -430,7 +430,7 @@ struct OCRService {
             
             itemLines = Array(lines[startIndex..<totalIdx])
             #if DEBUG
-            Self.logger.debug("Line items region (dateIndex missing): lines \(startIndex) to \(totalIdx - 1) (first amount line after header to total)")
+            print("📍 Line items region (dateIndex missing): lines \(startIndex) to \(totalIdx - 1) (first amount line after header to total)")
             #endif
         } else if let dateIdx = dateIndex, dateIdx + 1 < lines.count {
             // Fallback 2: totalIndex missing, use all lines after date
@@ -452,7 +452,7 @@ struct OCRService {
             
             itemLines = Array(lines[(dateIdx + 1)..<endIndex])
             #if DEBUG
-            Self.logger.debug("Line items region (totalIndex missing): lines \(dateIdx + 1) to \(endIndex - 1) (after date to last amount line)")
+            print("📍 Line items region (totalIndex missing): lines \(dateIdx + 1) to \(endIndex - 1) (after date to last amount line)")
             #endif
         } else {
             // Fallback 3: Both missing, try to find region by looking for amount patterns
@@ -464,16 +464,16 @@ struct OCRService {
             
             itemLines = Array(lines[startIndex..<endIndex])
             #if DEBUG
-            Self.logger.debug("Line items region (both indices missing): lines \(startIndex) to \(endIndex - 1) (estimated region)")
+            print("📍 Line items region (both indices missing): lines \(startIndex) to \(endIndex - 1) (estimated region)")
             #endif
         }
         
         // Log included lines kun i debug-bygg (kan inneholde sensitiv kvitteringsdata)
         #if DEBUG
         if !itemLines.isEmpty {
-            Self.logger.debug("Included lines for parsing (\(itemLines.count) lines):\n\(itemLines.joined(separator: "\n"))")
+            print("📄 Included lines for parsing (\(itemLines.count) lines):\n\(itemLines.joined(separator: "\n"))")
         } else {
-            Self.logger.debug("No lines included for parsing")
+            print("📄 No lines included for parsing")
         }
         #endif
         

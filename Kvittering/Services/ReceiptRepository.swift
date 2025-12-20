@@ -21,7 +21,7 @@ enum SearchScope: String, CaseIterable {
 final class ReceiptRepository {
     private let context: ModelContext
     private let imageStore: ImageStore
-    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "ReceiptRepository")
+    private static let logger = Logger(subsystem: AppConstants.loggerSubsystem, category: "ReceiptRepository")
 
     init(context: ModelContext, imageStore: ImageStore = ImageStore()) {
         self.context = context

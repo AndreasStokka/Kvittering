@@ -5,7 +5,7 @@ import os.log
 
 struct ImageStore {
     private let fileManager = FileManager.default
-    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "ImageStore")
+    private static let logger = Logger(subsystem: AppConstants.loggerSubsystem, category: "ImageStore")
 
     func saveImage(_ image: UIImage, id: UUID) throws -> String {
         let url = try imageURL(for: id)

@@ -6,7 +6,7 @@ import os.log
 struct KvitteringApp: App {
     @StateObject private var themeManager = ThemeManager()
     @State private var featureAccess = LocalFeatureAccess()
-    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "KvitteringApp")
+    private static let logger = Logger(subsystem: AppConstants.loggerSubsystem, category: "KvitteringApp")
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([

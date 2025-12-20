@@ -22,6 +22,7 @@
 		A1UTIL10 /* TextNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL11 /* TextNormalizer.swift */; };
 		A1UTIL12 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL13 /* ThemeManager.swift */; };
 		A1UTIL14 /* MessageComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL15 /* MessageComposeView.swift */; };
+		A1UTIL16 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL17 /* AppConstants.swift */; };
 		A1UTIL2 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL3 /* PhotoPicker.swift */; };
 		A1UTIL4 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL5 /* ActivityView.swift */; };
 		A1UTIL6 /* AmountsFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1UTIL7 /* AmountsFormatter.swift */; };
@@ -73,6 +74,7 @@
 		A1UTIL11 /* TextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextNormalizer.swift; sourceTree = "<group>"; };
 		A1UTIL13 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		A1UTIL15 /* MessageComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposeView.swift; sourceTree = "<group>"; };
+		A1UTIL17 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		A1UTIL3 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		A1UTIL5 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		A1UTIL7 /* AmountsFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountsFormatter.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				A1UTIL11 /* TextNormalizer.swift */,
 				A1UTIL13 /* ThemeManager.swift */,
 				A1UTIL15 /* MessageComposeView.swift */,
+				A1UTIL17 /* AppConstants.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -364,6 +367,7 @@
 				A1UTIL4 /* ActivityView.swift in Sources */,
 				A1UTIL6 /* AmountsFormatter.swift in Sources */,
 				A1UTIL8 /* CategoryIconHelper.swift in Sources */,
+				A1UTIL16 /* AppConstants.swift in Sources */,
 				A1UTIL10 /* TextNormalizer.swift in Sources */,
 				A1UTIL12 /* ThemeManager.swift in Sources */,
 				A1UTIL14 /* MessageComposeView.swift in Sources */,

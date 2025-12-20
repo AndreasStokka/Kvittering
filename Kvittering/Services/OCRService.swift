@@ -13,7 +13,7 @@ struct OCRResult {
 
 struct OCRService {
     private let storeNameMatcher = StoreNameMatcher()
-    private static let logger = Logger(subsystem: "com.example.Kvittering", category: "OCRService")
+    private static let logger = Logger(subsystem: AppConstants.loggerSubsystem, category: "OCRService")
     
     /// Feiltyper for OCR-prosessering
     enum OCRError: LocalizedError {
@@ -498,7 +498,7 @@ struct OCRService {
         
         // Pattern to match just a price (for multi-line items), med eller uten kr/NOK, støtt negative beløp
         // Støtt også beløp med mellomrom mellom tusenvis: "2 379.15" eller "2 379,15"
-        let priceOnlyPattern = "^([-]?\\s*[0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})(?:\\s*(?:kr|NOK))?$"
+        _ = "^([-]?\\s*[0-9]{1,3}(?:[\\s.][0-9]{3})*[.,][0-9]{2})(?:\\s*(?:kr|NOK))?$"
         
         var index = 0
         while index < normalizedLines.count {

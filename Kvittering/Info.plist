@@ -18,6 +18,8 @@
 	<string>Appen trenger tilgang til kameraet for å skanne kvitteringer.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Appen kan lagre kvitteringsbilder til fotobiblioteket ditt hvis du velger det i innstillinger.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Appen trenger tilgang til bildebiblioteket for å importere kvitteringsbilder.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

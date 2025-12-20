@@ -13,6 +13,16 @@ struct ImageStore {
             throw NSError(domain: "ImageStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "Kunne ikke konvertere bilde"])
         }
         try data.write(to: url, options: .atomic)
+        
+        // Sett iOS Data Protection på filen
+        // Bruker NSFileProtectionComplete fordi kvitteringsbilder kan inneholde sensitiv informasjon
+        // (navn, kortnumre, kjøpshistorikk). Filen er kun tilgjengelig når enheten er ulåst,
+        // noe som er tilstrekkelig siden brukeren må se på skjermen for å bruke appen.
+        try fileManager.setAttributes(
+            [.protectionKey: FileProtectionType.complete],
+            ofItemAtPath: url.path
+        )
+        
         return url.lastPathComponent
     }
 
@@ -38,6 +48,13 @@ struct ImageStore {
         let dir = directoryURL()
         if !fileManager.fileExists(atPath: dir.path) {
             try fileManager.createDirectory(at: dir, withIntermediateDirectories: true)
+            
+            // Sett iOS Data Protection på mappen
+            // NSFileProtectionComplete sikrer at hele mappen er kryptert når enheten er låst
+            try fileManager.setAttributes(
+                [.protectionKey: FileProtectionType.complete],
+                ofItemAtPath: dir.path
+            )
         }
         return dir.appendingPathComponent("\(id.uuidString).jpg")
     }

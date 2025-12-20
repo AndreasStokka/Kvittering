@@ -30,7 +30,21 @@ struct KvitteringApp: App {
         
         do {
             // Prøv å opprette container med eksisterende database
-            return try ModelContainer(for: schema, configurations: [config])
+            let container = try ModelContainer(for: schema, configurations: [config])
+            
+            // Sett iOS Data Protection på databasefilen
+            // Bruker NSFileProtectionCompleteUnlessOpen fordi:
+            // 1. Databasen inneholder sensitive kvitteringsdata (beløp, butikknavn, datoer)
+            // 2. SwiftData kan ha bakgrunnsoperasjoner som trenger tilgang til åpne filer
+            // 3. CompleteUnlessOpen gir kryptering når filen er lukket, men tillater pågående operasjoner
+            if FileManager.default.fileExists(atPath: databaseURL.path) {
+                try? FileManager.default.setAttributes(
+                    [.protectionKey: FileProtectionType.completeUnlessOpen],
+                    ofItemAtPath: databaseURL.path
+                )
+            }
+            
+            return container
         } catch {
             // Hvis opprettelse feiler, prøv å håndtere det mer elegant
             // Dette kan skje hvis skjemaet har endret seg betydelig

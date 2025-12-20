@@ -17,7 +17,7 @@ struct HomeView: View {
                         HStack(spacing: 12) {
                             Image(systemName: "doc.text.viewfinder")
                                 .font(.title3)
-                            Text("Skann kvittering")
+                            Text("Ny kvittering")
                                 .font(.headline)
                         }
                         .frame(maxWidth: .infinity)

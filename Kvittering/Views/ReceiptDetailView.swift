@@ -89,7 +89,7 @@ struct ReceiptDetailView: View {
                         Divider()
                         
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("I Norge gir Forbrukerkjøpsloven deg sterke rettigheter. Selv om mange produsenter (som Apple) kun oppgir 1 års garanti, har du i de fleste tilfeller 5 års reklamasjonsrett på varer som er ment å vare vesentlig lenger enn 2 år (f.eks. mobil, PC, hvitevarer). For andre varer gjelder 2 år.")
+                            Text("I Norge har du sterke rettigheter når du kjøper noe.                            Selv om mange produsenter, som Apple,bare gir 1 års garanti, har du likevel ofte 5 års reklamasjonsrett. Det gjelder for ting som skal vare vesentlig lenger enn 2 år, som for eksempel mobiltelefoner, PC-er og hvitevarer.                            For andre varer som ikke er ment å vare så lenge, gjelder 2 års reklamasjonsrett.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             

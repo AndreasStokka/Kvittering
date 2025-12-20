@@ -22,10 +22,10 @@ struct ConsumerGuideView: View {
                     content: """
                     I Norge gir Forbrukerkjøpsloven deg sterke rettigheter:
                     
-                    • 5 års reklamasjonsrett på varer som er ment å vare vesentlig lenger enn 2 år (f.eks. mobil, PC, hvitevarer)
-                    • 2 års reklamasjonsrett på andre varer
+                    • Du har 5 års reklamasjonsrett på varer som er ment å vare vesentlig lenger enn 2 år, som mobiltelefon, PC eller hvitevarer.
+                    • Du har 2 års reklamasjonsrett på andre varer
                     
-                    Dette gjelder uavhengig av hva produsenten oppgir som garanti. Selv om Apple kun oppgir 1 års garanti, har du 5 års reklamasjonsrett på iPhone og Mac.
+                    Dette gjelder uansett hva produsenten sier om garanti. For eksempel har du 5 års reklamasjonsrett på iPhone og Mac, selv om Apple bare gir 1 års garanti.
                     """
                 )
                 
@@ -34,13 +34,13 @@ struct ConsumerGuideView: View {
                     title: "Returrett",
                     icon: "arrow.uturn.backward",
                     content: """
-                    Returrett gjelder for kjøp gjort utenfor butikklokaler (f.eks. nettbutikker):
+                    Du har returrett når du kjøper noe utenfor vanlige butikker, for eksempel på nett:
                     
-                    • 14 dagers angrefrist for kjøp på nett
-                    • Du kan returnere varen uten å oppgi grunn
-                    • Varen må være i samme stand som ved levering
+                    • Du har 14 dagers angrefrist
+                    • Du kan returnere varen uten å si hvorfor
+                    • Varen må være i samme stand som da du fikk den
                     
-                    Merk: Returrett gjelder ikke for varer som er tilpasset eller laget spesielt for deg.
+                    Merk: Returretten gjelder ikke hvis varen er spesiallaget for deg. Og: det er stort sett kun netthandel som har "returrett". 
                     """
                 )
                 
@@ -49,11 +49,11 @@ struct ConsumerGuideView: View {
                     title: "Bytterett",
                     icon: "arrow.triangle.2.circlepath",
                     content: """
-                    Mange butikker tilbyr frivillig bytterett utover det loven krever:
+                    Mange butikker tilbyr bytterett frivillig, i tillegg til det loven sier:
                     
-                    • Butikken kan tilby kortere eller lengre byttefrist
-                    • Sjekk butikkens vilkår for bytterett
-                    • Husk å bevare kvitteringen for å benytte bytterett
+                    • Butikken bestemmer selv hvor lang byttefrist du får
+                    • Sjekk hva som gjelder der du handler
+                    • Ta vare på kvitteringen hvis du vil bytte
                     """
                 )
                 
@@ -62,12 +62,12 @@ struct ConsumerGuideView: View {
                     title: "Garanti vs Reklamasjonsrett",
                     icon: "doc.text.magnifyingglass",
                     content: """
-                    Det er viktig å skille mellom garanti og reklamasjonsrett:
+                    Garanti og reklamasjonsrett er ikke det samme:
                     
-                    • Garanti er frivillig og gis av produsenten
-                    • Reklamasjonsrett er lovfestet og kan ikke fraskrives
-                    • Du har alltid reklamasjonsrett, uavhengig av garanti
-                    • Reklamasjonsretten gjelder også brukt kjøp fra forhandler
+                    • Garanti er noe produsenten kan velge å gi
+                    • Reklamasjonsrett er bestemt i loven og kan ikke tas fra deg
+                    • Du har alltid reklamasjonsrett, også hvis det finnes en garanti
+                    • Du har reklamasjonsrett også når du kjøper brukte varer fra forhandler
                     """
                 )
                 
@@ -76,12 +76,12 @@ struct ConsumerGuideView: View {
                     title: "Praktiske tips",
                     icon: "lightbulb.fill",
                     content: """
-                    For å sikre dine rettigheter:
+                    For å ta vare på rettighetene dine:
                     
-                    • Behold alltid kvitteringen (bruk denne appen!)
-                    • Dokumenter feil og mangler med bilder
-                    • Kontakt forhandler først ved reklamasjon
-                    • Du kan kreve omlevering, prisavslag eller heving av kjøpet
+                    • Ta vare på kvitteringen (bruk gjerne appen!)
+                    • Ta bilder av feil og mangler
+                    • Ta kontakt med forhandleren først hvis du vil reklamere
+                    • Du kan kreve å få ny vare, få tilbake penger eller heve kjøpet
                     """
                 )
                 

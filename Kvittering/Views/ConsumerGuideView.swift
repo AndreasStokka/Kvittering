@@ -100,6 +100,15 @@ struct ConsumerGuideView: View {
                 }
                 .padding(.top, 8)
                 .foregroundStyle(.secondary)
+                
+                // Legal disclaimer
+                Text("NB: Informasjonen i denne appen er ment som en generell guide og utgjør ikke juridisk rådgivning. Sjekk alltid oppdaterte lover og regler hos Forbrukerrådet eller Lovdata ved tvister.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 24)
+                    .padding(.bottom, 16)
             }
             .padding()
         }

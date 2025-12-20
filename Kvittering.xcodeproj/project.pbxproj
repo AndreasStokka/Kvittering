@@ -45,6 +45,7 @@
 		A1VM8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1VM9 /* SettingsViewModel.swift */; };
 		A1RESOURCE1 /* store_categories.json in Resources */ = {isa = PBXBuildFile; fileRef = A1RESOURCE0 /* store_categories.json */; };
 		A1RESOURCE2 /* store_categories.json in Resources */ = {isa = PBXBuildFile; fileRef = A1RESOURCE0 /* store_categories.json */; };
+		A1ASSETS1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1ASSETS0 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		A1VM7 /* ReceiptDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptDetailViewModel.swift; sourceTree = "<group>"; };
 		A1VM9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		A1RESOURCE0 /* store_categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = store_categories.json; sourceTree = "<group>"; };
+		A1ASSETS0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		PRODID /* Kvittering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kvittering.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		TESTPROD /* Kvittering.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Kvittering.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -123,6 +125,7 @@
 			children = (
 				A1APP0 /* KvitteringApp.swift */,
 				A1PLIST0 /* Info.plist */,
+				A1ASSETS0 /* Assets.xcassets */,
 				MODELS /* Models */,
 				SERVICES /* Services */,
 				VIEWMODELS /* ViewModels */,
@@ -321,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1RESOURCE1 /* store_categories.json in Resources */,
+				A1ASSETS1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

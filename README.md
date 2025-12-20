@@ -2,40 +2,37 @@
 
 [![CI](https://github.com/AndreasStokka/Kvittering/actions/workflows/objective-c-xcode.yml/badge.svg)](https://github.com/AndreasStokka/Kvittering/actions/workflows/objective-c-xcode.yml)
 
-En iOS-app for å organisere og administrere kvitteringer. Appen bruker OCR (Optical Character Recognition) for å automatisk ekstraktere informasjon fra kvitteringer ved hjelp av kamera eller bilde.
+Kvittering er en iOS-app som hjelper deg å holde orden på kvitteringene dine. Appen bruker optisk tegngjenkjenning (OCR) for å hente ut informasjon automatisk, rett fra bilde eller kamera.
 
 ## Funksjoner
 
-### 📸 OCR-skanning
-- Automatisk tekstgjenkjenning fra kvitteringsbilder
+### 📸 Skann kvitteringer med tekstgjenkjenning (OCR)
+- Automatisk tekstgjenkjenning fra bilder av kvitteringer
 - Støtte for både kamera og bildegalleri
-- Dokument-skanner for optimal bildekvalitet
-- Ekstraherer butikknavn, dato, totalbeløp og linjeposter
+- Bruk dokument-skanner for best mulig bildekvalitet
+- Henter ut butikknavn, dato, totalbeløp og linjeposter 
+
 
 ### 📋 Organisering
-- Kategorisering av kvitteringer (Mat, Klær, Elektronikk, Sport, Transport, Annet)
-- Automatisk kategoriforslag basert på butikknavn
-- Lagring av kvitteringsbilder
-- Notater og merknader på kvitteringer
+- Sorter kvitteringer i kategorier som Mat, Klær, Elektronikk, Sport, Bygg og Annet
+- Appen foreslår automatisk kategori basert på butikknavn
+- Lagre bilder av kvitteringene
+- Legg til notater og merknader
 
-### 🔄 Retur- og bytterett
-- Sporing av retur- og bytterett for hver kvittering
-- Varsling om returfrister
-- Informasjon om forbrukerrettigheter
 
 ### 📊 Oversikt
-- Liste over alle kvitteringer
-- Søk og filtrering
-- Visning av siste kvitteringer på hjem-skjermen
-- Detaljvisning med alle linjeposter
+- Se alle kvitteringer i en liste
+- Søk og filtrer etter det du leter etter
+- Rask tilgang til de siste kvitteringene fra hjem-skjermen
+- Se detaljert informasjon om hver kvittering
 
 ### 📚 Forbrukerrettigheter
 - Guide om garanti og reklamasjonsrett
 - Informasjon om angrerett (14 dager)
-- Lenker til relevante kilder (Forbrukerrådet, Lovdata, Forbrukertilsynet)
+- Lenker til Forbrukerrådet, Lovdata og Forbrukertilsynet
+
 
 ## Krav
-
 - iOS 17.0 eller nyere
 - Xcode 15.0 eller nyere
 - Swift 5.9 eller nyere
@@ -43,9 +40,9 @@ En iOS-app for å organisere og administrere kvitteringer. Appen bruker OCR (Opt
 ## Teknologier
 
 - **SwiftUI** - Brukergrensesnitt
-- **SwiftData** - Datapersistens
+- **SwiftData** - Lagring av data
 - **Vision Framework** - OCR-tekstgjenkjenning
-- **UIKit** - Integrasjon med kamera og bildehåndtering
+- **UIKit** - Kobling til kamera og bilder
 
 ## Prosjektstruktur
 
@@ -93,28 +90,16 @@ Kvittering/
 
 ### Legge til en ny kvittering
 
-1. Trykk på "Skann kvittering" på hjem-skjermen
+1. Trykk på "Ny kvittering" på hjem-skjermen
 2. Velg mellom:
-   - **Kamera** - Ta et bilde direkte
+   - **Kamera (dokument-skanner)** - Ta et bilde direkte
    - **Bildegalleri** - Velg fra eksisterende bilder
-   - **Dokument-skanner** - Bruk iOS dokument-skanner for optimal kvalitet
-3. Appen vil automatisk ekstraktere informasjon fra kvitteringen
-4. Gjør eventuelle justeringer og lagre
+3. Appen henter ut info fra bildet
+4. Du kan gjøre eventuelle justeringer og lagre
 
-### Kategorisering
-
-Appen forsøker automatisk å kategorisere kvitteringer basert på butikknavn. Du kan alltid endre kategorien manuelt.
-
-### Retur- og bytterett
-
-For hver kvittering kan du registrere:
-- Om butikken har returrett og hvor mange dager
-- Om butikken har bytterett og hvor mange dager
-
-Dette hjelper deg med å holde oversikt over returfrister.
+ter.
 
 ## Testing
-
 Prosjektet inneholder en omfattende testsuite:
 
 ```bash
@@ -162,22 +147,11 @@ Se CI-status i badge øverst i README.
 
 ## Arkitektur
 
-Appen følger MVVM-arkitektur (Model-View-ViewModel):
+Appen følger MVVM-prinsippet (Model-View-ViewModel):
 
-- **Models**: SwiftData-modeller for datapersistens
-- **Views**: SwiftUI-views for brukergrensesnitt
-- **ViewModels**: Forretningslogikk og state management
-- **Services**: Tjenester for OCR, kategorisering, og datalagring
-- **Utilities**: Hjelpeklasser og reusable komponenter
+- Models: Datamodeller med SwiftData
+- Views: SwiftUI-skjermbilder
+- ViewModels: Logikk og tilstand
+- Services: OCR, kategorisering og datalagring
+- Utilities: Gjenbrukbare komponenter
 
-## Lisens
-
-[Legg til din lisens her]
-
-## Bidrag
-
-Bidrag er velkomne! Vennligst opprett en issue eller pull request.
-
-## Kontakt
-
-[Legg til kontaktinformasjon her]
